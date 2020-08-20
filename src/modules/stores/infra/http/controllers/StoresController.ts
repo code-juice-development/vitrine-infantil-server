@@ -7,6 +7,8 @@ import UpdateStoreService from '@modules/stores/services/UpdateStoreService';
 import DeleteStoreService from '@modules/stores/services/DeleteStoreService';
 import ShowStoreService from '@modules/stores/services/ShowStoreService';
 
+import Queue from '@shared/infra/bull/Queue';
+
 class StoresController {
 
   public async index(request: Request, response: Response): Promise<Response> {
@@ -44,6 +46,8 @@ class StoresController {
       link,
     });
 
+    Queue.getInstance().add('UpdateProductFromStore', { store }, null);
+
     return response.status(201).json(store);
   }
 
@@ -60,12 +64,14 @@ class StoresController {
 
     const updateStoreService = container.resolve(UpdateStoreService);
 
-    await updateStoreService.execute({
+    const store = await updateStoreService.execute({
       id,
       name,
       api,
       link,
     });
+
+    Queue.getInstance().add('UpdateProductFromStore', { store }, null);
 
     return response.status(204).send();
   }

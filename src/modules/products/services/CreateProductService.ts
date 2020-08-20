@@ -13,8 +13,10 @@ interface IRequest {
   image: string;
 
   category: string;
+  
+  link: string;
 
-  price: number;
+  price: string;
 
   size: string;
 
@@ -35,7 +37,7 @@ class CreateProductService {
   ) {}
 
   public async execute({
-    name, description, image, category, price, size, color, gender, store_id
+    name, description, image, category, link, price, size, color, gender, store_id
   }: IRequest): Promise<Product> {
 
     const product = await this.productsRepository.create({
@@ -43,6 +45,7 @@ class CreateProductService {
       description,
       image,
       category,
+      link,
       price,
       size,
       color,

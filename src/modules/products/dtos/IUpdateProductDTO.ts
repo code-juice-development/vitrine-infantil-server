@@ -10,7 +10,9 @@ interface ICreateProductDTO {
 
   category: string;
 
-  price: number;
+  link: string;
+
+  price: string;
 
   size: string;
 

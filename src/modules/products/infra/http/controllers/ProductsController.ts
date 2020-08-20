@@ -6,7 +6,6 @@ import UpdateProductService from '@modules/products/services/UpdateProductServic
 import DeleteProductService from '@modules/products/services/DeleteProductService';
 import ListProductService from '@modules/products/services/ListProductsService';
 import ShowProductService from '@modules/products/services/ShowProductService';
-import UpdateStoreService from '@modules/stores/services/UpdateStoreService';
 
 class ProductsController {
 
@@ -16,6 +15,7 @@ class ProductsController {
       description,
       image,
       category,
+      link,
       price,
       size,
       color,
@@ -30,6 +30,7 @@ class ProductsController {
       description,
       image,
       category,
+      link,
       price,
       size,
       color,
@@ -50,6 +51,7 @@ class ProductsController {
       description,
       image,
       category,
+      link,
       price,
       size,
       color,
@@ -65,6 +67,7 @@ class ProductsController {
       description,
       image,
       category,
+      link,
       price,
       size,
       color,
@@ -87,14 +90,24 @@ class ProductsController {
     return response.status(204).send();
   }
 
-  public async index(request: Request, response: Response): Promise<Response> {
+  public async index(_request: Request, response: Response): Promise<Response> {
+    const listProductsService = container.resolve(ListProductService);
 
-    return response.json();
+    const products = await listProductsService.execute();
+
+    return response.json(products);
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
+    const {
+      id,
+    } = request.params;
 
-    return response.json();
+    const showProductService = container.resolve(ShowProductService);
+
+    const product = await showProductService.execute({ id });
+
+    return response.json(product);
   }
 
 };

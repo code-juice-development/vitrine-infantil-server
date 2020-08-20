@@ -14,7 +14,9 @@ interface IRequest {
 
   category: string;
 
-  price: number;
+  link: string;
+
+  price: string;
 
   size: string;
 
@@ -34,13 +36,14 @@ class UpdateProductService {
     private productsRepository: IProductsRepository
   ) {}
 
-  public async execute({ id, name, description, image, category, price, size, color, gender, store_id }: IRequest) {
+  public async execute({ id, name, description, image, category, link, price, size, color, gender, store_id }: IRequest) {
     await this.productsRepository.update({
       id,
       name, 
       description,
       image,
       category,
+      link,
       price,
       size,
       color,

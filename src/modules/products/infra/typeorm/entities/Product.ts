@@ -13,7 +13,7 @@ import Store from '@modules/stores/infra/typeorm/entities/Store';
 @Entity('products')
 class Product {
   
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -29,7 +29,10 @@ class Product {
   category: string;
 
   @Column()
-  price: number;
+  link: string;
+
+  @Column({type: 'real'})
+  price: string;
 
   @Column()
   size: string;

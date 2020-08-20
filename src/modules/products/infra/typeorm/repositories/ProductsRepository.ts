@@ -15,7 +15,7 @@ class ProductsRepository implements IProductsRepository {
   }
 
   public async create({ 
-    name, description, image, category, price, size, color, gender, store_id 
+    name, description, image, category, link, price, size, color, gender, store_id 
   }: ICreateProductDTO): Promise<Product> {
 
     const product = this.ormRepository.create({
@@ -23,6 +23,7 @@ class ProductsRepository implements IProductsRepository {
       description,
       image,
       category,
+      link,
       price, 
       size,
       color,
@@ -36,7 +37,7 @@ class ProductsRepository implements IProductsRepository {
   }
   
   public async update({ 
-    id, name, description, image, category, price, size, color, gender, store_id 
+    id, name, description, image, category, link, price, size, color, gender, store_id 
   }: IUpdateProductDTO): Promise<Product> {
 
     const product = this.ormRepository.create({
@@ -45,6 +46,7 @@ class ProductsRepository implements IProductsRepository {
       description,
       image,
       category,
+      link,
       price, 
       size,
       color,
@@ -64,7 +66,7 @@ class ProductsRepository implements IProductsRepository {
   }
 
   public async deleteByStore(store_id: string): Promise<boolean> {
-    const deleteResult = await this.ormRepository.delete(store_id);
+    const deleteResult = await this.ormRepository.delete({ store_id });
 
     return deleteResult.affected != null;
   }
