@@ -25,5 +25,5 @@ BullBoard.setQueues(Queue.getInstance().getQueues());
 app.use('/admin', BullBoard.UI);
 
 app.listen(process.env.APP_PORT, () => {
-  console.log(`🚀 Served launched on port ${process.env.APP_PORT}`);
+  console.log('🚀 Served launched');
 });

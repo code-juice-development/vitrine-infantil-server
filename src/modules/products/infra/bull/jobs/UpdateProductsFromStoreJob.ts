@@ -5,7 +5,7 @@ import IJob from '@shared/infra/bull/jobs/IJob';
 
 import UpdateProductsFromStoreService from '@modules/products/services/UpdateProductsFromStoreService';
 
-class UpdateProductFromStoreJob implements IJob {
+class UpdateProductsFromStoreJob implements IJob {
   
   public getName(): string {
     return 'UpdateProductFromStore';
@@ -28,4 +28,4 @@ class UpdateProductFromStoreJob implements IJob {
 
 };
 
-export default UpdateProductFromStoreJob;
+export default UpdateProductsFromStoreJob;

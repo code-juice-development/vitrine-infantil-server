@@ -1,20 +1,31 @@
 import { Request, Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
+import { inject, injectable, container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-interface TokenPaylod {
+import ITokenProvider from '@modules/users/providers/TokenProvider/models/ITokenProvider';
 
-  iat: number;
+@injectable()
+class TokenProvider implements ITokenProvider {
 
-  exp: number;
+  constructor(
+    @inject('TokenProvider')
+    private tokenProvider: ITokenProvider,
+  ) {}
   
-  sub: string;
+  public async generateToken(user_id: string): Promise<string> {
+    return await this.tokenProvider.generateToken(user_id);
+  }
+  
+  public async verifyToken(token: string): Promise<string | undefined> {
+    return await this.tokenProvider.verifyToken(token);
+  }
 
 }
 
-const isUserLoggedIn = (request: Request, response: Response, next: NextFunction): void => {
+const isUserLoggedIn = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
   const authorization = request.headers.authorization;
+  const tokenProvider = container.resolve(TokenProvider);
 
   if(!authorization) {
     throw new AppError('Você não está logado', 401);
@@ -22,18 +33,19 @@ const isUserLoggedIn = (request: Request, response: Response, next: NextFunction
 
   const [, token] = authorization.split(' ');
 
-  try {
-    const { sub } = verify(token, String(process.env.SECRET)) as TokenPaylod;
+  const user_id = await tokenProvider.verifyToken(token);
 
-    request.user = {
-      id: sub
+  if(user_id !== undefined) {
+    request.user = { 
+      id: user_id 
     };
 
     return next();
-  } 
-  catch (error) {
+  }
+  else {
     throw new AppError('Token informado é inválido', 401);
   }
+
 };
 
 export default isUserLoggedIn;

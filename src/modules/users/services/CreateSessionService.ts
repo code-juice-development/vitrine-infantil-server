@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
-import { compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
 
 import AppError from '@shared/errors/AppError';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
+import ITokenProvider from '@modules/users/providers/TokenProvider/models/ITokenProvider';
 
 import User from '@modules/users/infra/typeorm/entities/User';
 
@@ -29,7 +29,13 @@ class CreateSessionService {
 
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+
+    @inject('TokenProvider')
+    private tokenProvider: ITokenProvider,
   ) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
@@ -39,16 +45,13 @@ class CreateSessionService {
       throw new AppError('Email e/ou Senha incorreto', 401);
     }
 
-    const isPasswordMatch = await compare(password, String(user.password));
+    const isPasswordMatch = await this.hashProvider.compareHash(password, String(user.password));
 
     if(!isPasswordMatch) {
       throw new AppError('Email e/ou Senha incorreto', 401);
     }
 
-    const token = sign({}, String(process.env.SECRET), {
-      subject: user.id,
-      expiresIn: '30d'
-    });
+    const token = await this.tokenProvider.generateToken(user.id);
 
     return {
       user,

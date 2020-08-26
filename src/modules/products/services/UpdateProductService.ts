@@ -1,4 +1,5 @@
 import { inject, injectable } from 'tsyringe';
+import Product from '../infra/typeorm/entities/Product';
 
 import IProductsRepository from '../repositories/IProductsRepository';
 
@@ -36,8 +37,8 @@ class UpdateProductService {
     private productsRepository: IProductsRepository
   ) {}
 
-  public async execute({ id, name, description, image, category, link, price, size, color, gender, store_id }: IRequest) {
-    await this.productsRepository.update({
+  public async execute({ id, name, description, image, category, link, price, size, color, gender, store_id }: IRequest): Promise<Product> {
+    const product = await this.productsRepository.update({
       id,
       name, 
       description,
@@ -50,6 +51,8 @@ class UpdateProductService {
       gender,
       store_id,
     });
+
+    return product;
   }
 
 };

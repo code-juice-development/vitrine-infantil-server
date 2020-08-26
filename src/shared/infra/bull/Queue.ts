@@ -1,7 +1,7 @@
 import Bull from 'bull';
 
 import UpdateProductsJob from '@modules/products/infra/bull/jobs/UpdateProductsJob';
-import UpdateProductFromStoreJob from '@modules/products/infra/bull/jobs/UpdateProductFromStoreJob';
+import UpdateProductsFromStoreJob from '@modules/products/infra/bull/jobs/UpdateProductsFromStoreJob';
 
 import IJob from '@shared/infra/bull/jobs/IJob';
 
@@ -16,7 +16,7 @@ class Queue {
   private constructor() {
     this.jobs = [
       new UpdateProductsJob(),
-      new UpdateProductFromStoreJob(),
+      new UpdateProductsFromStoreJob(),
     ];
 
     this.init();

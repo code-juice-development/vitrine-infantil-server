@@ -15,6 +15,10 @@ interface IProductsRepository {
 
   findById(id: string): Promise<Product | undefined>;
 
+  findByFilters(page: number, name: string, description: string, category: string, gender: string, minimum_price: number, maximum_price: number): Promise<Product[]>;
+
+  countByFilters(name: string, description: string, category: string, gender: string, minimum_price: number, maximum_price: number): Promise<number>;
+
   findAll(): Promise<Product[]>;
 
 };

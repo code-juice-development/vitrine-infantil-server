@@ -35,8 +35,8 @@ class UpdateProductsFromStoreService {
       const description = String(element['g:description']).substr(0, 254);
       const link = element['g:link'];
       const image = element['g:image_link'];
-      const category = String(new RegExp('[^>]*$').exec(element['g:product_type'] ?? '')![1] ?? '').trim();
-      const price = String(new RegExp('^[^a-zA-Z]*').exec(element['g:price'] ?? '')![1] ?? 0).trim();
+      const category = String(new RegExp('[^>]*$').exec(element['g:product_type'] ?? '')![0] ?? '').trim();
+      const price = String(new RegExp('^[^a-zA-Z]*').exec(element['g:price'] ?? '')![0] ?? 0).trim();
       const size = element['g:size'];
       const color = element['g:color'];
       const gender = element['g:gender'];

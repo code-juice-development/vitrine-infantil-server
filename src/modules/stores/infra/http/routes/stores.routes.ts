@@ -14,7 +14,7 @@ const storesController = new StoresController();
 
 storesRouter.use(isUserLoggedIn);
 
-storesRouter.get('/', showStoreMiddleware, storesController.index);
+storesRouter.get('/', storesController.index);
 storesRouter.get('/:id', showStoreMiddleware, storesController.show);
 storesRouter.post('/', createStoreMiddleware, storesController.create);
 storesRouter.put('/:id', updateStoreMiddleware, storesController.update);
