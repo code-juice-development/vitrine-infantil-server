@@ -35,7 +35,13 @@ class Queue {
 
   private init() {
     this.queues = this.jobs.map((job) => {
-      const queue = new Bull(job.getName());
+      const queue = new Bull(job.getName(), {
+        redis: {
+          port: Number(process.env.REDIS_PORT), 
+          host: String(process.env.REDIS_HOST), 
+          password: String(process.env.REDIS_PASSWORD),
+        }
+      });
 
       queue.process(job.handle);
 
