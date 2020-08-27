@@ -3,6 +3,7 @@ import 'reflect-metadata';
 
 import express from 'express';
 import 'express-async-errors';
+import cors from 'cors';
 import { errors } from 'celebrate';
 
 import '@shared/infra/typeorm';
@@ -17,6 +18,7 @@ import Queue from '@shared/infra/bull/Queue';
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(routes);
 app.use(errors());
 app.use(errorHandler);
