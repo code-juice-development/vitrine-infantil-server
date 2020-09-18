@@ -5,7 +5,6 @@ import IProductsRepository from '@modules/products/repositories/IProductsReposit
 import Product from '@modules/products/infra/typeorm/entities/Product';
 
 interface IRequest {
-
   name: string;
 
   description: string;
@@ -13,7 +12,7 @@ interface IRequest {
   image: string;
 
   category: string;
-  
+
   link: string;
 
   price: string;
@@ -25,23 +24,29 @@ interface IRequest {
   gender: string;
 
   store_id: string;
-
-};
+}
 
 @injectable()
 class CreateProductService {
-
   constructor(
     @inject('ProductsRepository')
-    private productsRepository: IProductsRepository
+    private productsRepository: IProductsRepository,
   ) {}
 
   public async execute({
-    name, description, image, category, link, price, size, color, gender, store_id
+    name,
+    description,
+    image,
+    category,
+    link,
+    price,
+    size,
+    color,
+    gender,
+    store_id,
   }: IRequest): Promise<Product> {
-
     const product = await this.productsRepository.create({
-      name, 
+      name,
       description,
       image,
       category,
@@ -55,7 +60,6 @@ class CreateProductService {
 
     return product;
   }
-
-};
+}
 
 export default CreateProductService;

@@ -6,10 +6,9 @@ import Product from '@modules/products/infra/typeorm/entities/Product';
 
 @injectable()
 class ListProductsService {
-
   constructor(
     @inject('ProductsRepository')
-    private productsRepository: IProductsRepository
+    private productsRepository: IProductsRepository,
   ) {}
 
   public async execute(): Promise<Product[]> {
@@ -17,7 +16,6 @@ class ListProductsService {
 
     return products;
   }
-
-};
+}
 
 export default ListProductsService;

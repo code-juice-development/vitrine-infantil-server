@@ -13,7 +13,7 @@ describe('List Products Service', () => {
 
   it('should be able to list all Products', async () => {
     const productYellowShoe = await fakeProductsRepository.create({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',
@@ -26,7 +26,7 @@ describe('List Products Service', () => {
     });
 
     const productRedShoe = await fakeProductsRepository.create({
-      name: 'Red Shoe', 
+      name: 'Red Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/redshoe/image',
       category: 'Shoes',

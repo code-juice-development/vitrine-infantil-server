@@ -15,14 +15,14 @@ describe('Create Store Service', () => {
     const store = await fakeStoresRepository.create({
       api: 'www.dream.com/admin',
       link: 'www.dream.com',
-      name: 'Dream'
+      name: 'Dream',
     });
 
     const updatedStore = await updateStoreService.execute({
       id: store.id,
       api: 'www.store.com/admin',
       link: 'www.store.com',
-      name: 'Store'
+      name: 'Store',
     });
 
     expect(updatedStore.id).toBe(store.id);

@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
-import Product from '../infra/typeorm/entities/Product';
 
-import IProductsRepository from '../repositories/IProductsRepository';
+import IProductsRepository from '@modules/products/repositories/IProductsRepository';
+
+import Product from '@modules/products/infra/typeorm/entities/Product';
 
 interface IRequest {
-
   id: string;
 
   name: string;
@@ -26,21 +26,31 @@ interface IRequest {
   gender: string;
 
   store_id: string;
-
-};
+}
 
 @injectable()
 class UpdateProductService {
-
   constructor(
     @inject('ProductsRepository')
-    private productsRepository: IProductsRepository
+    private productsRepository: IProductsRepository,
   ) {}
 
-  public async execute({ id, name, description, image, category, link, price, size, color, gender, store_id }: IRequest): Promise<Product> {
+  public async execute({
+    id,
+    name,
+    description,
+    image,
+    category,
+    link,
+    price,
+    size,
+    color,
+    gender,
+    store_id,
+  }: IRequest): Promise<Product> {
     const product = await this.productsRepository.update({
       id,
-      name, 
+      name,
       description,
       image,
       category,
@@ -54,7 +64,6 @@ class UpdateProductService {
 
     return product;
   }
-
-};
+}
 
 export default UpdateProductService;

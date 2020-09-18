@@ -8,14 +8,16 @@ let deleteProductFromStoreService: DeleteProductFromStoreService;
 describe('Delete Product Service', () => {
   beforeEach(() => {
     fakeProductsRepository = new FakeProductsRepository();
-    deleteProductFromStoreService = new DeleteProductFromStoreService(fakeProductsRepository);
+    deleteProductFromStoreService = new DeleteProductFromStoreService(
+      fakeProductsRepository,
+    );
   });
 
   it('should be able to delete all Products from the Store', async () => {
     const store_id = '123';
 
     await fakeProductsRepository.create({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',
@@ -28,7 +30,7 @@ describe('Delete Product Service', () => {
     });
 
     await fakeProductsRepository.create({
-      name: 'Red Shoe', 
+      name: 'Red Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/redshoe/image',
       category: 'Shoes',

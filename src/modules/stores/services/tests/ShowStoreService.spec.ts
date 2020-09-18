@@ -1,7 +1,6 @@
 import AppError from '@shared/errors/AppError';
 
 import FakeStoresRepository from '@modules/stores/repositories/fakes/FakeStoreRepository';
-import FakeStoreService from '@modules/stores/repositories/fakes/FakeStoreRepository';
 
 import ShowStoreService from '@modules/stores/services/ShowStoreService';
 
@@ -10,7 +9,7 @@ let showStoreService: ShowStoreService;
 
 describe('Show Store Service', () => {
   beforeEach(() => {
-    fakeStoresRepository = new FakeStoreService();
+    fakeStoresRepository = new FakeStoresRepository();
     showStoreService = new ShowStoreService(fakeStoresRepository);
   });
 
@@ -18,7 +17,7 @@ describe('Show Store Service', () => {
     const store = await fakeStoresRepository.create({
       api: 'www.dream.com/admin',
       link: 'www.dream.com',
-      name: 'Dream'
+      name: 'Dream',
     });
 
     const findStore = await showStoreService.execute({ id: store.id });
@@ -27,8 +26,10 @@ describe('Show Store Service', () => {
   });
 
   it('should not be able to show a nonexistent Store', async () => {
-    expect(showStoreService.execute({ 
-      id: 'nonexistent-id' 
-    })).rejects.toBeInstanceOf(AppError);
+    expect(
+      showStoreService.execute({
+        id: 'nonexistent-id',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

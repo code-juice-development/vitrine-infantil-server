@@ -1,4 +1,3 @@
-import Product from '@modules/products/infra/typeorm/entities/Product';
 import FakeProductsRepository from '@modules/products/repositories/fakes/FakeProductsRepository';
 
 import ListProductsFilteredService from '@modules/products/services/ListProductsFilteredService';
@@ -9,12 +8,14 @@ let listProductsFilteredService: ListProductsFilteredService;
 describe('List Products Filtered Service', () => {
   beforeEach(() => {
     fakeProductsRepository = new FakeProductsRepository();
-    listProductsFilteredService = new ListProductsFilteredService(fakeProductsRepository);
+    listProductsFilteredService = new ListProductsFilteredService(
+      fakeProductsRepository,
+    );
   });
 
   it('should be able to list all Products', async () => {
     const productYellowShoe = await fakeProductsRepository.create({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',
@@ -27,7 +28,7 @@ describe('List Products Filtered Service', () => {
     });
 
     const productRedShoe = await fakeProductsRepository.create({
-      name: 'Red Shoe', 
+      name: 'Red Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/redshoe/image',
       category: 'Shoes',
@@ -40,7 +41,7 @@ describe('List Products Filtered Service', () => {
     });
 
     const productGreenShoe = await fakeProductsRepository.create({
-      name: 'Red Shoe', 
+      name: 'Red Shoe',
       description: 'A beautiful shoe',
       image: 'www.store.com/api/greenshoe/image',
       category: 'Shoes',
@@ -53,7 +54,7 @@ describe('List Products Filtered Service', () => {
     });
 
     const productBlueShoe = await fakeProductsRepository.create({
-      name: 'Blue Shoe', 
+      name: 'Blue Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/blueshoe/image',
       category: 'Shoes',
@@ -66,7 +67,7 @@ describe('List Products Filtered Service', () => {
     });
 
     const productGrayShoe = await fakeProductsRepository.create({
-      name: 'Gray Shoe', 
+      name: 'Gray Shoe',
       description: 'A hard shoe',
       image: 'www.store.com/api/grayshoe/image',
       category: 'Hard Shoes',
@@ -81,11 +82,12 @@ describe('List Products Filtered Service', () => {
     const nameTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: 'Yellow Shoe',
-      category: '',
+      categories: [],
       description: '',
       gender: '',
       minimum_price: 0,
       maximum_price: 0,
+      stores: [],
     });
 
     expect(nameTestResponse.products).toContain(productYellowShoe);
@@ -93,11 +95,12 @@ describe('List Products Filtered Service', () => {
     const categoryTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      category: 'Hard Shoes',
+      categories: ['Hard Shoes'],
       description: '',
       gender: '',
       minimum_price: 0,
       maximum_price: 0,
+      stores: [],
     });
 
     expect(categoryTestResponse.products).toContain(productGrayShoe);
@@ -105,11 +108,12 @@ describe('List Products Filtered Service', () => {
     const descriptionTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      category: '',
+      categories: [],
       description: 'A beautiful shoe',
       gender: '',
       minimum_price: 0,
       maximum_price: 0,
+      stores: [],
     });
 
     expect(descriptionTestResponse.products).toContain(productGreenShoe);
@@ -117,11 +121,12 @@ describe('List Products Filtered Service', () => {
     const genderTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      category: '',
+      categories: [],
       description: '',
       gender: 'Feminine',
       minimum_price: 0,
       maximum_price: 0,
+      stores: [],
     });
 
     expect(genderTestResponse.products).toContain(productBlueShoe);
@@ -129,11 +134,12 @@ describe('List Products Filtered Service', () => {
     const minimumPriceTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      category: '',
+      categories: [],
       description: '',
       gender: '',
       minimum_price: 100,
       maximum_price: 0,
+      stores: [],
     });
 
     expect(minimumPriceTestResponse.products).toContain(productRedShoe);
@@ -141,11 +147,12 @@ describe('List Products Filtered Service', () => {
     const maximumPriceTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      category: '',
+      categories: [],
       description: '',
       gender: '',
       minimum_price: 0,
       maximum_price: 25,
+      stores: [],
     });
 
     expect(maximumPriceTestResponse.products).toContain(productBlueShoe);
@@ -153,11 +160,12 @@ describe('List Products Filtered Service', () => {
     const bewteenPriceTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      category: '',
+      categories: [],
       description: '',
       gender: '',
       minimum_price: 15,
       maximum_price: 45,
+      stores: [],
     });
 
     expect(bewteenPriceTestResponse.products).toContain(productBlueShoe);

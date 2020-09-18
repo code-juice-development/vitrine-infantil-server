@@ -3,23 +3,19 @@ import { inject, injectable } from 'tsyringe';
 import IStoresRepository from '@modules/stores/repositories/IStoresRepository';
 
 interface IRequest {
-
   id: string;
-
-};
+}
 
 @injectable()
 class DeleteStoreService {
-
   constructor(
     @inject('StoresRepository')
-    private storesRepository: IStoresRepository
+    private storesRepository: IStoresRepository,
   ) {}
 
-  public async execute({ id }: IRequest) {
+  public async execute({ id }: IRequest): Promise<void> {
     await this.storesRepository.delete(id);
   }
-
-};
+}
 
 export default DeleteStoreService;

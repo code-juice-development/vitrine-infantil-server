@@ -1,6 +1,4 @@
-
 interface IUpdateStoreDTO {
-
   id: string;
 
   name: string;
@@ -8,7 +6,6 @@ interface IUpdateStoreDTO {
   link: string;
 
   api: string;
-
-};
+}
 
 export default IUpdateStoreDTO;

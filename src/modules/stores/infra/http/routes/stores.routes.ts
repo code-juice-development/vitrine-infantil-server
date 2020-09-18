@@ -12,10 +12,11 @@ const storesRouter = Router();
 
 const storesController = new StoresController();
 
-storesRouter.use(isUserLoggedIn);
-
 storesRouter.get('/', storesController.index);
 storesRouter.get('/:id', showStoreMiddleware, storesController.show);
+
+storesRouter.use(isUserLoggedIn);
+
 storesRouter.post('/', createStoreMiddleware, storesController.create);
 storesRouter.put('/:id', updateStoreMiddleware, storesController.update);
 storesRouter.delete('/:id', deleteStoreMiddleware, storesController.delete);

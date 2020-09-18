@@ -8,7 +8,6 @@ import IUpdateStoreDTO from '@modules/stores/dtos/IUpdateStoreDTO';
 import Store from '@modules/stores/infra/typeorm/entities/Store';
 
 class FakeStoresRepository implements IStoresRepository {
-
   private stores: Store[] = [];
 
   public async create({ name, api, link }: ICreateStoreDTO): Promise<Store> {
@@ -20,17 +19,22 @@ class FakeStoresRepository implements IStoresRepository {
 
     return store;
   }
-  
-  public async update({ id, name, api, link }: IUpdateStoreDTO): Promise<Store> {
-    const store = this.stores.find(store => store.id === id);
+
+  public async update({
+    id,
+    name,
+    api,
+    link,
+  }: IUpdateStoreDTO): Promise<Store> {
+    const store = this.stores.find((storeFind) => storeFind.id === id);
 
     Object.assign(store, { name, api, link });
 
     return store ?? new Store();
   }
-  
+
   public async delete(id: string): Promise<boolean> {
-    const findIndex = this.stores.findIndex(store =>  store.id === id);
+    const findIndex = this.stores.findIndex((store) => store.id === id);
 
     this.stores.splice(findIndex, 1);
 
@@ -38,7 +42,7 @@ class FakeStoresRepository implements IStoresRepository {
   }
 
   public async findById(id: string): Promise<Store | undefined> {
-    const store = this.stores.find(store => store.id === id);
+    const store = this.stores.find((storeFind) => storeFind.id === id);
 
     return store;
   }
@@ -46,7 +50,6 @@ class FakeStoresRepository implements IStoresRepository {
   public async findAll(): Promise<Store[]> {
     return this.stores;
   }
-
-};
+}
 
 export default FakeStoresRepository;

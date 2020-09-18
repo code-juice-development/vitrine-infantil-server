@@ -11,6 +11,15 @@ import ProductsRepository from '@modules/products/infra/typeorm/repositories/Pro
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
 
-container.registerSingleton<IStoresRepository>('StoresRepository', StoresRepository);
-container.registerSingleton<IProductRepository>('ProductsRepository', ProductsRepository);
-container.registerSingleton<IUsersRepository>('UsersRepository', UsersRepository);
+container.registerSingleton<IStoresRepository>(
+  'StoresRepository',
+  StoresRepository,
+);
+container.registerSingleton<IProductRepository>(
+  'ProductsRepository',
+  ProductsRepository,
+);
+container.registerSingleton<IUsersRepository>(
+  'UsersRepository',
+  UsersRepository,
+);

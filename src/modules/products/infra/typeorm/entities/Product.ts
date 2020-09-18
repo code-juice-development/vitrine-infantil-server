@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne, 
+  ManyToOne,
   JoinColumn,
 } from 'typeorm';
 
@@ -12,7 +12,6 @@ import Store from '@modules/stores/infra/typeorm/entities/Store';
 
 @Entity('products')
 class Product {
-  
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -31,7 +30,7 @@ class Product {
   @Column()
   link: string;
 
-  @Column({type: 'real'})
+  @Column({ type: 'real' })
   price: string;
 
   @Column()
@@ -46,8 +45,10 @@ class Product {
   @Column()
   store_id: string;
 
-  @ManyToOne(() => Store)
-  @JoinColumn({ name: 'store_id' })
+  @ManyToOne((_type) => Store, (store) => store.products, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'store_id', referencedColumnName: 'id' })
   store: Store;
 
   @CreateDateColumn()
@@ -55,7 +56,6 @@ class Product {
 
   @UpdateDateColumn()
   updated_at: string;
-
-};
+}
 
 export default Product;

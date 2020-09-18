@@ -1,12 +1,7 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 class User {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,7 +10,6 @@ class User {
 
   @Column()
   password?: string;
-
-};
+}
 
 export default User;

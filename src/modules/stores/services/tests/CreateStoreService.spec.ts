@@ -15,7 +15,7 @@ describe('Create Store Service', () => {
     const store = await createStoreService.execute({
       api: 'www.store.com/admin',
       link: 'www.store.com/admin',
-      name: 'Store'
+      name: 'Store',
     });
 
     expect(store).toHaveProperty('id');

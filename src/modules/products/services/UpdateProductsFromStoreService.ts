@@ -4,45 +4,48 @@ import Parser from 'rss-parser';
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 
 interface IRequest {
-
   store_id: string;
 
   api: string;
-
-};
+}
 
 @injectable()
 class UpdateProductsFromStoreService {
-
   constructor(
     @inject('ProductsRepository')
-    private productsRepository: IProductsRepository
+    private productsRepository: IProductsRepository,
   ) {}
 
   public async execute({ store_id, api }: IRequest): Promise<void> {
-    const parser = new Parser({ customFields: { item: this.getRssCustomFields() }});
+    const parser = new Parser({
+      customFields: { item: this.getRssCustomFields() },
+    });
 
     await this.productsRepository.deleteByStore(store_id);
 
     const data = await parser.parseURL(api);
-    
-    if(!data || !data.items) return;
-    
+
+    if (!data || !data.items) return;
+
     data.items.forEach(async (element) => {
-      if(!element) return;
-      
+      if (!element) return;
+
       const name = String(element['g:title']).substr(0, 254);
       const description = String(element['g:description']).substr(0, 254);
       const link = element['g:link'];
       const image = element['g:image_link'];
-      const category = String(new RegExp('[^>]*$').exec(element['g:product_type'] ?? '')![0] ?? '').trim();
-      const price = String(new RegExp('^[^a-zA-Z]*').exec(element['g:price'] ?? '')![0] ?? 0).trim();
+      const category = String(
+        new RegExp('[^>]*$').exec(element['g:product_type'])?.[0] ?? '',
+      ).trim();
+      const price = String(
+        new RegExp('^[^a-zA-Z]*').exec(element['g:price'])?.[0] ?? 0,
+      ).trim();
       const size = element['g:size'];
-      const color = element['g:color'];
-      const gender = element['g:gender'];
+      const color = element['g:color'] ?? 'Neutra';
+      const gender = element['g:gender'] ?? 'Unisex';
 
       await this.productsRepository.create({
-        name, 
+        name,
         description,
         image,
         category,
@@ -69,7 +72,6 @@ class UpdateProductsFromStoreService {
       'g:gender',
     ];
   }
-
-};
+}
 
 export default UpdateProductsFromStoreService;

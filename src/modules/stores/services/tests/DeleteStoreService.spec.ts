@@ -1,5 +1,4 @@
 import FakeStoresRepository from '@modules/stores/repositories/fakes/FakeStoreRepository';
-import FakeStoreService from '@modules/stores/repositories/fakes/FakeStoreRepository';
 
 import DeleteStoreService from '@modules/stores/services/DeleteStoreService';
 
@@ -8,7 +7,7 @@ let deleteStoreService: DeleteStoreService;
 
 describe('Delete Store Service', () => {
   beforeEach(() => {
-    fakeStoresRepository = new FakeStoreService();
+    fakeStoresRepository = new FakeStoresRepository();
     deleteStoreService = new DeleteStoreService(fakeStoresRepository);
   });
 
@@ -16,10 +15,10 @@ describe('Delete Store Service', () => {
     const store = await fakeStoresRepository.create({
       api: 'www.store.com/admin',
       link: 'www.store.com',
-      name: 'Store'
+      name: 'Store',
     });
 
-    const id = store.id;
+    const { id } = store;
 
     await deleteStoreService.execute({ id });
 

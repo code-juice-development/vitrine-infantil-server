@@ -1,5 +1,4 @@
 interface ICreateProductDTO {
-
   name: string;
 
   description: string;
@@ -19,7 +18,6 @@ interface ICreateProductDTO {
   gender: string;
 
   store_id: string;
-
-};
+}
 
 export default ICreateProductDTO;

@@ -6,24 +6,20 @@ import UpdateProductsFromStoreJob from '@modules/products/infra/bull/jobs/Update
 import IJob from '@shared/infra/bull/jobs/IJob';
 
 class Queue {
-
   private jobs: Array<IJob>;
 
-  private queues: Array<Bull.Queue>
+  private queues: Array<Bull.Queue>;
 
   private static instance: Queue;
 
   private constructor() {
-    this.jobs = [
-      new UpdateProductsJob(),
-      new UpdateProductsFromStoreJob(),
-    ];
+    this.jobs = [new UpdateProductsJob(), new UpdateProductsFromStoreJob()];
 
     this.init();
   }
 
-  public static getInstance() {
-    if(!this.instance) {
+  public static getInstance(): Queue {
+    if (!this.instance) {
       this.instance = new Queue();
     }
     return this.instance;
@@ -37,10 +33,10 @@ class Queue {
     this.queues = this.jobs.map((job) => {
       const queue = new Bull(job.getName(), {
         redis: {
-          port: Number(process.env.REDIS_PORT), 
-          host: String(process.env.REDIS_HOST), 
+          port: Number(process.env.REDIS_PORT),
+          host: String(process.env.REDIS_HOST),
           password: String(process.env.REDIS_PASSWORD),
-        }
+        },
       });
 
       queue.process(job.handle);
@@ -49,12 +45,15 @@ class Queue {
     });
   }
 
-  public async add(name: string, data: any, options: any): Promise<Bull.Job | undefined> {
-    const queue = this.queues.find((queue) => queue.name === name);
+  public async add(
+    name: string,
+    data: any,
+    options: any,
+  ): Promise<Bull.Job | undefined> {
+    const queue = this.queues.find((queueFind) => queueFind.name === name);
 
-    return await queue?.add(data, options);
+    return queue?.add(data, options);
   }
-
 }
 
 export default Queue;

@@ -13,7 +13,7 @@ describe('Create Product Service', () => {
 
   it('should be able to create a new Product', async () => {
     const product = await createProductService.execute({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',

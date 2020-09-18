@@ -15,7 +15,7 @@ const updateProductMiddleware = celebrate({
     color: Joi.string().required(),
     gender: Joi.string().required(),
     store_id: Joi.string().uuid().required(),
-  })
+  }),
 });
 
 export default updateProductMiddleware;

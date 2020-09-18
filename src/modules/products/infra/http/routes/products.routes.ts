@@ -21,6 +21,10 @@ productsRouter.use(isUserLoggedIn);
 
 productsRouter.post('/', createProductMiddleware, productsController.create);
 productsRouter.put('/:id', updateProductMiddleware, productsController.update);
-productsRouter.delete('/:id', deleteProductMiddleware, productsController.delete);
+productsRouter.delete(
+  '/:id',
+  deleteProductMiddleware,
+  productsController.delete,
+);
 
 export default productsRouter;

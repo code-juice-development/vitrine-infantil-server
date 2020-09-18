@@ -13,7 +13,7 @@ describe('Update Product Service', () => {
 
   it('should be able to list update a Product', async () => {
     const product = await fakeProductsRepository.create({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',
@@ -27,7 +27,7 @@ describe('Update Product Service', () => {
 
     const updatedProduct = await updateProductService.execute({
       id: product.id,
-      name: 'Red Shoe', 
+      name: 'Red Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/redshoe/image',
       category: 'Shoes',

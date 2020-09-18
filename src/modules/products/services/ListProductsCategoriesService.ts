@@ -2,20 +2,18 @@ import { inject, injectable } from 'tsyringe';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 
-interface IRequest {
-  id: string;
-}
-
 @injectable()
-class DeleteProductService {
+class ListProductsCategoriesService {
   constructor(
     @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
   ) {}
 
-  public async execute({ id }: IRequest): Promise<void> {
-    await this.productsRepository.delete(id);
+  public async execute(): Promise<string[]> {
+    const categories = await this.productsRepository.findCategories();
+
+    return categories;
   }
 }
 
-export default DeleteProductService;
+export default ListProductsCategoriesService;

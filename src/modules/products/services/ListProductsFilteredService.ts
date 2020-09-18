@@ -5,67 +5,72 @@ import IProductsRepository from '@modules/products/repositories/IProductsReposit
 import Product from '@modules/products/infra/typeorm/entities/Product';
 
 interface IRequest {
-
   page: number;
 
   name: string;
 
   description: string;
-  
-  category: string;
-  
+
+  categories: string[];
+
   gender: string;
-  
+
   minimum_price: number;
-  
+
   maximum_price: number;
 
-};
+  stores: string[];
+}
 
 interface IReponse {
-
   products: Product[];
 
   total: number;
-
-};
+}
 
 @injectable()
 class ListProductsFilteredService {
-
   constructor(
     @inject('ProductsRepository')
-    private productsRepository: IProductsRepository
+    private productsRepository: IProductsRepository,
   ) {}
 
-  public async execute({ 
-    page, name, description, category, gender, minimum_price, maximum_price
+  public async execute({
+    page,
+    name,
+    description,
+    categories,
+    gender,
+    minimum_price,
+    maximum_price,
+    stores,
   }: IRequest): Promise<IReponse> {
     const products = await this.productsRepository.findByFilters(
       page,
       name,
       description,
-      category,
+      categories,
       gender,
       minimum_price,
-      maximum_price
+      maximum_price,
+      stores,
     );
 
     const total = await this.productsRepository.countByFilters(
       name,
       description,
-      category,
+      categories,
       gender,
       minimum_price,
-      maximum_price
+      maximum_price,
+      stores,
     );
 
     return {
       products,
-      total
+      total,
     };
   }
-
-};
+}
 
 export default ListProductsFilteredService;

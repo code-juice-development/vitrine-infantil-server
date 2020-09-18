@@ -15,7 +15,7 @@ describe('Show Product Service', () => {
 
   it('should be able to show a Product', async () => {
     const product = await fakeProductsRepository.create({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',
@@ -33,8 +33,10 @@ describe('Show Product Service', () => {
   });
 
   it('should not be able to show a nonexistent Product', async () => {
-    expect(showProductService.execute({ 
-      id: 'nonexistent-id'
-    })).rejects.toBeInstanceOf(AppError);
+    expect(
+      showProductService.execute({
+        id: 'nonexistent-id',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

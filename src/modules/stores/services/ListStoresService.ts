@@ -6,10 +6,9 @@ import Store from '@modules/stores/infra/typeorm/entities/Store';
 
 @injectable()
 class ListStoresService {
-
   constructor(
     @inject('StoresRepository')
-    private storesRepository: IStoresRepository
+    private storesRepository: IStoresRepository,
   ) {}
 
   public async execute(): Promise<Store[]> {
@@ -17,7 +16,6 @@ class ListStoresService {
 
     return stores;
   }
-
-};
+}
 
 export default ListStoresService;

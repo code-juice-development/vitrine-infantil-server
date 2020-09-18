@@ -13,7 +13,7 @@ describe('Delete Product Service', () => {
 
   it('should be able to delete a Product', async () => {
     const product = await fakeProductsRepository.create({
-      name: 'Yellow Shoe', 
+      name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
       category: 'Shoes',
@@ -25,7 +25,7 @@ describe('Delete Product Service', () => {
       store_id: '123',
     });
 
-    const id = product.id;
+    const { id } = product;
 
     await deleteProductService.execute({ id });
 

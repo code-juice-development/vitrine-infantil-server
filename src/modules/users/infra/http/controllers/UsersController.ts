@@ -8,13 +8,13 @@ import UpdateUserService from '@modules/users/services/UpdateUserService';
 import DeleteUserService from '@modules/users/services/DeleteUserService';
 
 class UsersController {
-
   public async index(request: Request, response: Response): Promise<Response> {
     const listUserService = container.resolve(ListUserService);
 
     const users = await listUserService.execute();
 
     users.forEach((user) => {
+      // eslint-disable-next-line no-param-reassign
       delete user.password;
     });
 
@@ -22,9 +22,7 @@ class UsersController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const {
-      id
-    } = request.params;
+    const { id } = request.params;
 
     const showUserService = container.resolve(ShowUserService);
 
@@ -36,16 +34,13 @@ class UsersController {
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
-    const {
-      email,
-      password
-    } = request.body;
+    const { email, password } = request.body;
 
     const createUserService = container.resolve(CreateUserService);
 
-    const user = await createUserService.execute({ 
-      email, 
-      password 
+    const user = await createUserService.execute({
+      email,
+      password,
     });
 
     delete user.password;
@@ -54,30 +49,23 @@ class UsersController {
   }
 
   public async update(request: Request, response: Response): Promise<Response> {
-    const {
-      id
-    } = request.params;
+    const { id } = request.params;
 
-    const {
-      email,
-      password
-    } = request.body;
+    const { email, password } = request.body;
 
     const updateUserService = container.resolve(UpdateUserService);
 
     await updateUserService.execute({
       id,
       email,
-      password
+      password,
     });
 
     return response.status(204).send();
   }
 
   public async delete(request: Request, response: Response): Promise<Response> {
-    const {
-      id
-    } = request.params;
+    const { id } = request.params;
 
     const deleteUserService = container.resolve(DeleteUserService);
 
@@ -85,7 +73,6 @@ class UsersController {
 
     return response.status(204).send();
   }
-
-};
+}
 
 export default UsersController;

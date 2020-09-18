@@ -10,7 +10,6 @@ import ShowStoreService from '@modules/stores/services/ShowStoreService';
 import Queue from '@shared/infra/bull/Queue';
 
 class StoresController {
-
   public async index(request: Request, response: Response): Promise<Response> {
     const listStoresService = container.resolve(ListStoresService);
 
@@ -20,11 +19,9 @@ class StoresController {
   }
 
   public async show(request: Request, response: Response): Promise<Response> {
-    const {
-      id,
-    } = request.params;
+    const { id } = request.params;
 
-    const showStoreService = container.resolve(ShowStoreService)
+    const showStoreService = container.resolve(ShowStoreService);
 
     const store = await showStoreService.execute({ id });
 
@@ -32,11 +29,7 @@ class StoresController {
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
-    const {
-      name, 
-      api,
-      link,
-    } = request.body;
+    const { name, api, link } = request.body;
 
     const createStoreService = container.resolve(CreateStoreService);
 
@@ -51,16 +44,10 @@ class StoresController {
     return response.status(201).json(store);
   }
 
-  public async update(request: Request, response: Response) {
-    const {
-      id,
-    } = request.params
-    
-    const {
-      name,
-      api,
-      link,
-    } = request.body;
+  public async update(request: Request, response: Response): Promise<Response> {
+    const { id } = request.params;
+
+    const { name, api, link } = request.body;
 
     const updateStoreService = container.resolve(UpdateStoreService);
 
@@ -76,10 +63,8 @@ class StoresController {
     return response.status(204).send();
   }
 
-  public async delete(request: Request, response: Response) {
-    const {
-      id,
-    } = request.params
+  public async delete(request: Request, response: Response): Promise<Response> {
+    const { id } = request.params;
 
     const deleteStoreService = container.resolve(DeleteStoreService);
 
@@ -87,7 +72,6 @@ class StoresController {
 
     return response.status(204).send();
   }
-
-};
+}
 
 export default StoresController;

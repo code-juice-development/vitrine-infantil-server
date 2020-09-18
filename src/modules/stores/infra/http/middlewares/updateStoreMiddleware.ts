@@ -8,7 +8,7 @@ const updateStoreMiddleware = celebrate({
     name: Joi.string().required(),
     link: Joi.string().required(),
     api: Joi.string().required(),
-  })
+  }),
 });
 
 export default updateStoreMiddleware;
