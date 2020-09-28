@@ -14,12 +14,12 @@ class FakeProductsRepository implements IProductsRepository {
     name,
     description,
     image,
-    category,
     link,
     price,
     size,
     color,
     gender,
+    category_id,
     store_id,
   }: ICreateProductDTO): Promise<Product> {
     const store = new Product();
@@ -31,12 +31,12 @@ class FakeProductsRepository implements IProductsRepository {
         name,
         description,
         image,
-        category,
         link,
         price,
         size,
         color,
         gender,
+        category_id,
         store_id,
       },
     );
@@ -51,12 +51,12 @@ class FakeProductsRepository implements IProductsRepository {
     name,
     description,
     image,
-    category,
     link,
     price,
     size,
     color,
     gender,
+    category_id,
     store_id,
   }: IUpdateProductDTO): Promise<Product> {
     const product = this.products.find((productFind) => productFind.id === id);
@@ -65,12 +65,12 @@ class FakeProductsRepository implements IProductsRepository {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 
@@ -107,10 +107,10 @@ class FakeProductsRepository implements IProductsRepository {
     page: number,
     name: string,
     description: string,
-    categories: string[],
     gender: string,
     minimum_price: number,
     maximum_price: number,
+    categories: string[],
     stores: string[],
   ): Promise<Product[]> {
     const searchProducts = this.products.filter((product) => {
@@ -126,7 +126,7 @@ class FakeProductsRepository implements IProductsRepository {
 
       if (
         categories.length &&
-        !categories.some((findCategory) => findCategory === product.category)
+        !categories.some((findCategory) => findCategory === product.category.id)
       ) {
         isValid = false;
       }
@@ -159,10 +159,10 @@ class FakeProductsRepository implements IProductsRepository {
   public async countByFilters(
     name: string,
     description: string,
-    categories: string[],
     gender: string,
     minimum_price: number,
     maximum_price: number,
+    categories: string[],
     stores: string[],
   ): Promise<number> {
     const searchProducts = this.products.filter((product) => {
@@ -178,7 +178,7 @@ class FakeProductsRepository implements IProductsRepository {
 
       if (
         categories.length &&
-        !categories.some((findCategory) => findCategory === product.category)
+        !categories.some((findCategory) => findCategory === product.category.id)
       ) {
         isValid = false;
       }
@@ -206,14 +206,6 @@ class FakeProductsRepository implements IProductsRepository {
     });
 
     return searchProducts.length;
-  }
-
-  public async findCategories(): Promise<string[]> {
-    const categories = this.products.map((product) => {
-      return product.category;
-    });
-
-    return categories;
   }
 }
 

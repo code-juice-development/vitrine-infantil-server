@@ -11,8 +11,6 @@ interface IRequest {
 
   image: string;
 
-  category: string;
-
   link: string;
 
   price: string;
@@ -22,6 +20,8 @@ interface IRequest {
   color: string;
 
   gender: string;
+
+  category_id: string;
 
   store_id: string;
 }
@@ -37,24 +37,24 @@ class CreateProductService {
     name,
     description,
     image,
-    category,
     link,
     price,
     size,
     color,
     gender,
+    category_id,
     store_id,
   }: IRequest): Promise<Product> {
     const product = await this.productsRepository.create({
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 

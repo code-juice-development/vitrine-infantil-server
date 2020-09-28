@@ -18,26 +18,24 @@ interface IProductsRepository {
     page: number,
     name: string,
     description: string,
-    categories: string[],
     gender: string,
     minimum_price: number,
     maximum_price: number,
+    categories: string[],
     stores: string[],
   ): Promise<Product[]>;
 
   countByFilters(
     name: string,
     description: string,
-    categories: string[],
     gender: string,
     minimum_price: number,
     maximum_price: number,
+    categories: string[],
     stores: string[],
   ): Promise<number>;
 
   findAll(): Promise<Product[]>;
-
-  findCategories(): Promise<string[]>;
 }
 
 export default IProductsRepository;

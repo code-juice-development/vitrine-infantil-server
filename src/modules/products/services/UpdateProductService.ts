@@ -13,8 +13,6 @@ interface IRequest {
 
   image: string;
 
-  category: string;
-
   link: string;
 
   price: string;
@@ -24,6 +22,8 @@ interface IRequest {
   color: string;
 
   gender: string;
+
+  category_id: string;
 
   store_id: string;
 }
@@ -40,12 +40,12 @@ class UpdateProductService {
     name,
     description,
     image,
-    category,
     link,
     price,
     size,
     color,
     gender,
+    category_id,
     store_id,
   }: IRequest): Promise<Product> {
     const product = await this.productsRepository.update({
@@ -53,12 +53,12 @@ class UpdateProductService {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 

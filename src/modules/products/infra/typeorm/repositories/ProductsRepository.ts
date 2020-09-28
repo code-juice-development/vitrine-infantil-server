@@ -17,24 +17,24 @@ class ProductsRepository implements IProductsRepository {
     name,
     description,
     image,
-    category,
     link,
     price,
     size,
     color,
     gender,
+    category_id,
     store_id,
   }: ICreateProductDTO): Promise<Product> {
     const product = this.ormRepository.create({
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 
@@ -48,12 +48,12 @@ class ProductsRepository implements IProductsRepository {
     name,
     description,
     image,
-    category,
     link,
     price,
     size,
     color,
     gender,
+    category_id,
     store_id,
   }: IUpdateProductDTO): Promise<Product> {
     const product = this.ormRepository.create({
@@ -61,12 +61,12 @@ class ProductsRepository implements IProductsRepository {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 
@@ -87,6 +87,10 @@ class ProductsRepository implements IProductsRepository {
     return deleteResult.affected != null;
   }
 
+  /**
+   * Por enquanto deve retornar a Store junto, por causa da performance.
+   * @param id Store ID
+   */
   public async findById(id: string): Promise<Product | undefined> {
     const store = await this.ormRepository.findOne(id, {
       relations: ['store'],
@@ -99,13 +103,15 @@ class ProductsRepository implements IProductsRepository {
     page: number,
     name: string,
     description: string,
-    categories: Array<string>,
     gender: string,
     minimum_price: number,
     maximum_price: number,
+    categories: Array<string>,
     stores: Array<string>,
   ): Promise<Product[]> {
     const queryBuilder = this.ormRepository.createQueryBuilder('product');
+
+    queryBuilder.innerJoinAndSelect('product.category', 'category');
 
     if (name) {
       queryBuilder.andWhere(
@@ -122,7 +128,7 @@ class ProductsRepository implements IProductsRepository {
     }
 
     if (categories.length) {
-      queryBuilder.andWhere('product.category IN (:...categories)', {
+      queryBuilder.andWhere('category.id IN (:...categories)', {
         categories,
       });
     }
@@ -160,13 +166,15 @@ class ProductsRepository implements IProductsRepository {
   public async countByFilters(
     name: string,
     description: string,
-    categories: Array<string>,
     gender: string,
     minimum_price: number,
     maximum_price: number,
+    categories: Array<string>,
     stores: Array<string>,
   ): Promise<number> {
     const queryBuilder = this.ormRepository.createQueryBuilder('product');
+
+    queryBuilder.innerJoinAndSelect('product.category', 'category');
 
     if (name) {
       queryBuilder.andWhere(
@@ -183,7 +191,7 @@ class ProductsRepository implements IProductsRepository {
     }
 
     if (categories.length) {
-      queryBuilder.andWhere('product.category IN (:...categories)', {
+      queryBuilder.andWhere('category.id IN (:...categories)', {
         categories,
       });
     }
@@ -217,20 +225,6 @@ class ProductsRepository implements IProductsRepository {
     const products = (await this.ormRepository.find()) || [];
 
     return products;
-  }
-
-  public async findCategories(): Promise<string[]> {
-    const categoriesRaw = await this.ormRepository
-      .createQueryBuilder('product')
-      .select('product.category')
-      .groupBy('product.category')
-      .getRawMany();
-
-    const categories = categoriesRaw.map((categoryRaw) => {
-      return categoryRaw.product_category;
-    });
-
-    return categories;
   }
 }
 

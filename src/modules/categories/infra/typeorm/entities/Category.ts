@@ -9,8 +9,8 @@ import {
 
 import Product from '@modules/products/infra/typeorm/entities/Product';
 
-@Entity('stores')
-class Store {
+@Entity('categories')
+class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,19 +18,19 @@ class Store {
   name: string;
 
   @Column()
-  link: string;
+  description: string;
 
   @Column()
-  api: string;
+  keywords: string;
 
   @OneToMany((_type) => Product, (product) => product.store)
   products: Product[];
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at: string;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at: string;
 }
 
-export default Store;
+export default Category;

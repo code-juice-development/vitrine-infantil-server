@@ -1,5 +1,6 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
+/** Use only on Filtered Index, on ProductsSearchController */
 const indexProductsMiddleware = celebrate({
   [Segments.QUERY]: Joi.object().keys({
     name: Joi.string().optional(),

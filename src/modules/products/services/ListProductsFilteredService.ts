@@ -11,13 +11,13 @@ interface IRequest {
 
   description: string;
 
-  categories: string[];
-
   gender: string;
 
   minimum_price: number;
 
   maximum_price: number;
+
+  categories: string[];
 
   stores: string[];
 }
@@ -39,30 +39,30 @@ class ListProductsFilteredService {
     page,
     name,
     description,
-    categories,
     gender,
     minimum_price,
     maximum_price,
+    categories,
     stores,
   }: IRequest): Promise<IReponse> {
     const products = await this.productsRepository.findByFilters(
       page,
       name,
       description,
-      categories,
       gender,
       minimum_price,
       maximum_price,
+      categories,
       stores,
     );
 
     const total = await this.productsRepository.countByFilters(
       name,
       description,
-      categories,
       gender,
       minimum_price,
       maximum_price,
+      categories,
       stores,
     );
 

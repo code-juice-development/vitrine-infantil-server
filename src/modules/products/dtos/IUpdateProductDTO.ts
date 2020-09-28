@@ -7,8 +7,6 @@ interface ICreateProductDTO {
 
   image: string;
 
-  category: string;
-
   link: string;
 
   price: string;
@@ -18,6 +16,8 @@ interface ICreateProductDTO {
   color: string;
 
   gender: string;
+
+  category_id: string;
 
   store_id: string;
 }

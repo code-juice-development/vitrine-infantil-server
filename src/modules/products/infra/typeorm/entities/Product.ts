@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 
 import Store from '@modules/stores/infra/typeorm/entities/Store';
+import Category from '@modules/categories/infra/typeorm/entities/Category';
 
 @Entity('products')
 class Product {
@@ -25,9 +26,6 @@ class Product {
   image: string;
 
   @Column()
-  category: string;
-
-  @Column()
   link: string;
 
   @Column({ type: 'real' })
@@ -41,6 +39,15 @@ class Product {
 
   @Column()
   gender: string;
+
+  @Column()
+  category_id: string;
+
+  @ManyToOne((_type) => Category, (category) => category.products, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
+  category: Category;
 
   @Column()
   store_id: string;

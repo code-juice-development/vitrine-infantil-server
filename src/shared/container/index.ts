@@ -11,6 +11,9 @@ import ProductsRepository from '@modules/products/infra/typeorm/repositories/Pro
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
 
+import ICategoriesRepository from '@modules/categories/repositories/ICategoriesRepository';
+import CategoriesRepository from '@modules/categories/infra/typeorm/repositories/CategoriesRepository';
+
 container.registerSingleton<IStoresRepository>(
   'StoresRepository',
   StoresRepository,
@@ -22,4 +25,8 @@ container.registerSingleton<IProductRepository>(
 container.registerSingleton<IUsersRepository>(
   'UsersRepository',
   UsersRepository,
+);
+container.registerSingleton<ICategoriesRepository>(
+  'CategoriesRepository',
+  CategoriesRepository,
 );

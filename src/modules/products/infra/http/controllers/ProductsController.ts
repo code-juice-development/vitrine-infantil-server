@@ -4,8 +4,7 @@ import { container } from 'tsyringe';
 import CreateProductService from '@modules/products/services/CreateProductService';
 import UpdateProductService from '@modules/products/services/UpdateProductService';
 import DeleteProductService from '@modules/products/services/DeleteProductService';
-// import ListProductService from '@modules/products/services/ListProductsService';
-import ListProductFilteredService from '@modules/products/services/ListProductsFilteredService';
+import ListProductService from '@modules/products/services/ListProductsService';
 import ShowProductService from '@modules/products/services/ShowProductService';
 
 class ProductsController {
@@ -14,12 +13,12 @@ class ProductsController {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     } = request.body;
 
@@ -29,12 +28,12 @@ class ProductsController {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 
@@ -48,12 +47,12 @@ class ProductsController {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     } = request.body;
 
@@ -64,12 +63,12 @@ class ProductsController {
       name,
       description,
       image,
-      category,
       link,
       price,
       size,
       color,
       gender,
+      category_id,
       store_id,
     });
 
@@ -87,31 +86,9 @@ class ProductsController {
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
-    const {
-      page,
-      name,
-      description,
-      categories,
-      gender,
-      minimum_price,
-      maximum_price,
-      stores,
-    } = request.query;
+    const listProductsService = container.resolve(ListProductService);
 
-    const listProductsService = container.resolve(ListProductFilteredService);
-
-    const { products, total } = await listProductsService.execute({
-      page: Number(page ?? 1),
-      name: String(name ?? ''),
-      description: String(description ?? ''),
-      categories: categories ? String(categories).split(',') : [],
-      gender: String(gender ?? ''),
-      minimum_price: Number(minimum_price ?? 0),
-      maximum_price: Number(maximum_price ?? 0),
-      stores: stores ? String(stores).split(',') : [],
-    });
-
-    response.header('X-Total-Count', String(total));
+    const products = await listProductsService.execute();
 
     return response.json(products);
   }

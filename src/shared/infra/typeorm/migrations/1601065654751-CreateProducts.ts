@@ -5,7 +5,7 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export default class CreateProducts1596057594799 implements MigrationInterface {
+export default class CreateProducts1601065654751 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -55,6 +55,10 @@ export default class CreateProducts1596057594799 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'category_id',
+            type: 'uuid',
+          },
+          {
             name: 'store_id',
             type: 'uuid',
           },
@@ -69,6 +73,17 @@ export default class CreateProducts1596057594799 implements MigrationInterface {
             default: 'now()',
           },
         ],
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'products',
+      new TableForeignKey({
+        columnNames: ['category_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'categories',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       }),
     );
 
