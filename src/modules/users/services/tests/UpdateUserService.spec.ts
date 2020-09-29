@@ -17,7 +17,7 @@ describe('Update Users Service', () => {
       password: 'adm@123',
     });
 
-    const updateUser = await updateUserService.execute({ 
+    const updateUser = await updateUserService.execute({
       id: user.id,
       email: 'johnruan@example.com',
       password: 'adm@321',

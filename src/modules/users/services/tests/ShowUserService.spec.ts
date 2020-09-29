@@ -25,8 +25,10 @@ describe('Show Users Service', () => {
   });
 
   it('should not be able to show a nonexistent User', async () => {
-    expect(showUserService.execute({ 
-      id: 'nonexistent-id'
-    })).rejects.toBeInstanceOf(AppError);
+    expect(
+      showUserService.execute({
+        id: 'nonexistent-id',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

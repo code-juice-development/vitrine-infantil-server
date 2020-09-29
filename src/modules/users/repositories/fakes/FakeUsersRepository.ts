@@ -8,9 +8,8 @@ import IUpdateUserDTO from '@modules/users/dtos/IUpdateUserDTO';
 import User from '@modules/users/infra/typeorm/entities/User';
 
 class FakeUsersRepository implements IUsersRepository {
-
   private users: User[] = [];
-  
+
   public async create(userData: ICreateUserDTO): Promise<User> {
     const user = new User();
 
@@ -20,39 +19,38 @@ class FakeUsersRepository implements IUsersRepository {
 
     return user;
   }
-  
+
   public async update({ id, email, password }: IUpdateUserDTO): Promise<User> {
-    const user = this.users.find(user =>  user.id === id);
+    const user = this.users.find((userFind) => userFind.id === id);
 
     Object.assign(user, { id, email, password });
 
     return user ?? new User();
   }
-  
+
   public async delete(id: string): Promise<boolean> {
-    const findIndex = this.users.findIndex(userFind =>  userFind.id === id);
+    const findIndex = this.users.findIndex((userFind) => userFind.id === id);
 
     this.users.splice(findIndex, 1);
 
     return true;
   }
-  
+
   public async findById(id: string): Promise<User | undefined> {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find((userFind) => userFind.id === id);
 
     return user;
   }
 
   public async findByEmail(email: string): Promise<User | undefined> {
-    const user = this.users.find(user => user.email === email);
+    const user = this.users.find((userFind) => userFind.email === email);
 
     return user;
   }
-  
+
   public async findAll(): Promise<User[]> {
     return this.users;
   }
-
-};
+}
 
 export default FakeUsersRepository;

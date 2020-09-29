@@ -18,12 +18,12 @@ describe('List Products Filtered Service', () => {
       name: 'Yellow Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/yellowshoe/image',
-      category: 'Shoes',
       link: 'www.store.com/api/yellowshoe',
       price: '75.15',
       size: '42',
       color: 'Yellow',
       gender: 'Unissex',
+      category_id: '1234',
       store_id: '123',
     });
 
@@ -31,12 +31,12 @@ describe('List Products Filtered Service', () => {
       name: 'Red Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/redshoe/image',
-      category: 'Shoes',
       link: 'www.store.com/api/redshoe',
       price: '100.15',
       size: '40',
       color: 'Red',
       gender: 'Unissex',
+      category_id: '5656',
       store_id: '123',
     });
 
@@ -44,12 +44,12 @@ describe('List Products Filtered Service', () => {
       name: 'Red Shoe',
       description: 'A beautiful shoe',
       image: 'www.store.com/api/greenshoe/image',
-      category: 'Shoes',
       link: 'www.store.com/api/greenshoe',
       price: '80.15',
       size: '40',
       color: 'Green',
       gender: 'Unissex',
+      category_id: '6565',
       store_id: '123',
     });
 
@@ -57,12 +57,12 @@ describe('List Products Filtered Service', () => {
       name: 'Blue Shoe',
       description: 'A comfortable shoe',
       image: 'www.store.com/api/blueshoe/image',
-      category: 'Shoes',
       link: 'www.store.com/api/blueshoe',
       price: '20.15',
       size: '40',
       color: 'Blue',
       gender: 'Feminine',
+      category_id: '5566',
       store_id: '123',
     });
 
@@ -70,12 +70,12 @@ describe('List Products Filtered Service', () => {
       name: 'Gray Shoe',
       description: 'A hard shoe',
       image: 'www.store.com/api/grayshoe/image',
-      category: 'Hard Shoes',
       link: 'www.store.com/api/grayshoe',
       price: '40.15',
       size: '40',
       color: 'Gray',
       gender: 'Male',
+      category_id: '6655',
       store_id: '123',
     });
 
@@ -95,7 +95,7 @@ describe('List Products Filtered Service', () => {
     const categoryTestResponse = await listProductsFilteredService.execute({
       page: 1,
       name: '',
-      categories: ['Hard Shoes'],
+      categories: ['6655'],
       description: '',
       gender: '',
       minimum_price: 0,

@@ -7,29 +7,25 @@ import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
 
 interface IRequest {
-
   id: string;
-  
 }
 
 @injectable()
 class ShowUserService {
-
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
   ) {}
 
   public async execute({ id }: IRequest): Promise<User> {
     const user = await this.usersRepository.findById(id);
 
-    if(!user) {
+    if (!user) {
       throw new AppError('Não foi encontrado usuário com o ID informado');
     }
 
     return user;
   }
-
-};
+}
 
 export default ShowUserService;

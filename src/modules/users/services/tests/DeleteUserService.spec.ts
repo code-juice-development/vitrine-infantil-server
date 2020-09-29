@@ -17,7 +17,7 @@ describe('Delete User Service', () => {
       password: 'adm@123',
     });
 
-    const id = user.id;
+    const { id } = user;
 
     await deleteUserService.execute({ id });
 

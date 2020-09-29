@@ -9,24 +9,19 @@ import ITokenProvider from '@modules/users/providers/TokenProvider/models/IToken
 import User from '@modules/users/infra/typeorm/entities/User';
 
 interface IRequest {
-
   email: string;
 
   password: string;
-
 }
 
 interface IResponse {
-
   user: User;
 
   token: string;
-
 }
 
 @injectable()
 class CreateSessionService {
-
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
@@ -41,13 +36,16 @@ class CreateSessionService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
 
-    if(!user) {
+    if (!user) {
       throw new AppError('Email e/ou Senha incorreto', 401);
     }
 
-    const isPasswordMatch = await this.hashProvider.compareHash(password, String(user.password));
+    const isPasswordMatch = await this.hashProvider.compareHash(
+      password,
+      String(user.password),
+    );
 
-    if(!isPasswordMatch) {
+    if (!isPasswordMatch) {
       throw new AppError('Email e/ou Senha incorreto', 401);
     }
 
@@ -55,10 +53,9 @@ class CreateSessionService {
 
     return {
       user,
-      token
+      token,
     };
   }
-
-};
+}
 
 export default CreateSessionService;

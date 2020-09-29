@@ -13,17 +13,24 @@ describe('Create Session Service', () => {
     const fakeHashProvider = new FakeHashProvider();
     const fakeTokenProvider = new FakeTokenProvider();
 
-    const createUserService = new CreateUserService(fakeUsersRepository, fakeHashProvider);
-    const createSessionService = new CreateSessionService(fakeUsersRepository, fakeHashProvider, fakeTokenProvider);
+    const createUserService = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
+    const createSessionService = new CreateSessionService(
+      fakeUsersRepository,
+      fakeHashProvider,
+      fakeTokenProvider,
+    );
 
     const user = await createUserService.execute({
       email: 'johndoe@example.com',
-      password: 'adm@123'
+      password: 'adm@123',
     });
 
     const response = await createSessionService.execute({
       email: 'johndoe@example.com',
-      password: 'adm@123'
+      password: 'adm@123',
     });
 
     expect(response).toHaveProperty('token');
@@ -34,13 +41,19 @@ describe('Create Session Service', () => {
     const fakeUsersRepository = new FakeUsersRepository();
     const fakeHashProvider = new FakeHashProvider();
     const fakeTokenProvider = new FakeTokenProvider();
-    
-    const createSessionService = new CreateSessionService(fakeUsersRepository, fakeHashProvider, fakeTokenProvider);
 
-    expect(createSessionService.execute({
-      email: 'johndoe@example.com',
-      password: 'adm@123'
-    })).rejects.toBeInstanceOf(AppError);
+    const createSessionService = new CreateSessionService(
+      fakeUsersRepository,
+      fakeHashProvider,
+      fakeTokenProvider,
+    );
+
+    expect(
+      createSessionService.execute({
+        email: 'johndoe@example.com',
+        password: 'adm@123',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 
   it('should not be able to create a new Session with wrong password', async () => {
@@ -48,17 +61,26 @@ describe('Create Session Service', () => {
     const fakeHashProvider = new FakeHashProvider();
     const fakeTokenProvider = new FakeTokenProvider();
 
-    const createUserService = new CreateUserService(fakeUsersRepository, fakeHashProvider);
-    const createSessionService = new CreateSessionService(fakeUsersRepository, fakeHashProvider, fakeTokenProvider);
+    const createUserService = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
+    const createSessionService = new CreateSessionService(
+      fakeUsersRepository,
+      fakeHashProvider,
+      fakeTokenProvider,
+    );
 
     await createUserService.execute({
       email: 'johndoe@example.com',
-      password: 'adm@123'
+      password: 'adm@123',
     });
 
-    expect(createSessionService.execute({
-      email: 'johndoe@example.com',
-      password: 'wrong-password'
-    })).rejects.toBeInstanceOf(AppError);
+    expect(
+      createSessionService.execute({
+        email: 'johndoe@example.com',
+        password: 'wrong-password',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

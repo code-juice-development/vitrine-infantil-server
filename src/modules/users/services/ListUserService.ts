@@ -6,10 +6,9 @@ import User from '@modules/users/infra/typeorm/entities/User';
 
 @injectable()
 class ListUserService {
-
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
   ) {}
 
   public async execute(): Promise<User[]> {
@@ -17,7 +16,6 @@ class ListUserService {
 
     return users;
   }
-
-};
+}
 
 export default ListUserService;

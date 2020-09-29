@@ -78,9 +78,7 @@ class FakeProductsRepository implements IProductsRepository {
   }
 
   public async delete(id: string): Promise<boolean> {
-    const findIndex = this.products.findIndex((product) => product.id === id);
-
-    this.products.splice(findIndex, 1);
+    this.products = this.products.filter((product) => product.id !== id);
 
     return true;
   }
@@ -126,7 +124,7 @@ class FakeProductsRepository implements IProductsRepository {
 
       if (
         categories.length &&
-        !categories.some((findCategory) => findCategory === product.category.id)
+        !categories.some((findCategory) => findCategory === product.category_id)
       ) {
         isValid = false;
       }
@@ -178,7 +176,7 @@ class FakeProductsRepository implements IProductsRepository {
 
       if (
         categories.length &&
-        !categories.some((findCategory) => findCategory === product.category.id)
+        !categories.some((findCategory) => findCategory === product.category_id)
       ) {
         isValid = false;
       }
