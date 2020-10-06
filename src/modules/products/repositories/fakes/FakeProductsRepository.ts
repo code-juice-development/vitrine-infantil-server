@@ -103,6 +103,7 @@ class FakeProductsRepository implements IProductsRepository {
 
   public async findByFilters(
     page: number,
+    ordenation: string,
     name: string,
     description: string,
     gender: string,

@@ -7,6 +7,8 @@ import Product from '@modules/products/infra/typeorm/entities/Product';
 interface IRequest {
   page: number;
 
+  ordenation: string;
+
   name: string;
 
   description: string;
@@ -37,6 +39,7 @@ class ListProductsFilteredService {
 
   public async execute({
     page,
+    ordenation,
     name,
     description,
     gender,
@@ -47,6 +50,7 @@ class ListProductsFilteredService {
   }: IRequest): Promise<IReponse> {
     const products = await this.productsRepository.findByFilters(
       page,
+      ordenation,
       name,
       description,
       gender,

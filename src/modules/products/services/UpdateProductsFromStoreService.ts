@@ -33,13 +33,17 @@ class UpdateProductsFromStoreService {
 
     await this.productsRepository.deleteByStore(store_id);
 
-    const data = await parser.parseURL(api);
+    let data;
+
+    try {
+      data = await parser.parseURL(api);
+    } catch (error) {
+      /** @todo inserir log de erro */
+    }
 
     if (!data || !data.items) return;
 
     data.items.forEach(async (element) => {
-      if (!element) return;
-
       const name = String(element['g:title']).substr(0, 254);
       const description = String(element['g:description']).substr(0, 254);
       const link = element['g:link'];

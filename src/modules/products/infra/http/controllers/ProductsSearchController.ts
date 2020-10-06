@@ -13,6 +13,7 @@ class ProductsSearchController {
       gender,
       minimum_price,
       maximum_price,
+      ordenation,
       stores,
     } = request.query;
 
@@ -22,6 +23,7 @@ class ProductsSearchController {
 
     const { products, total } = await listProductsFilteredService.execute({
       page: Number(page ?? 1),
+      ordenation: String(ordenation ?? ''),
       name: String(name ?? ''),
       description: String(description ?? ''),
       gender: String(gender ?? ''),

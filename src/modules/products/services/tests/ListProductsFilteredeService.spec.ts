@@ -5,6 +5,7 @@ import ListProductsFilteredService from '@modules/products/services/ListProducts
 let fakeProductsRepository: FakeProductsRepository;
 let listProductsFilteredService: ListProductsFilteredService;
 
+/** @todo Create tests for Ordenation */
 describe('List Products Filtered Service', () => {
   beforeEach(() => {
     fakeProductsRepository = new FakeProductsRepository();
@@ -81,6 +82,7 @@ describe('List Products Filtered Service', () => {
 
     const nameTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: 'Yellow Shoe',
       categories: [],
       description: '',
@@ -94,6 +96,7 @@ describe('List Products Filtered Service', () => {
 
     const categoryTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: '',
       categories: ['6655'],
       description: '',
@@ -107,6 +110,7 @@ describe('List Products Filtered Service', () => {
 
     const descriptionTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: '',
       categories: [],
       description: 'A beautiful shoe',
@@ -120,6 +124,7 @@ describe('List Products Filtered Service', () => {
 
     const genderTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: '',
       categories: [],
       description: '',
@@ -133,6 +138,7 @@ describe('List Products Filtered Service', () => {
 
     const minimumPriceTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: '',
       categories: [],
       description: '',
@@ -146,6 +152,7 @@ describe('List Products Filtered Service', () => {
 
     const maximumPriceTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: '',
       categories: [],
       description: '',
@@ -159,6 +166,7 @@ describe('List Products Filtered Service', () => {
 
     const bewteenPriceTestResponse = await listProductsFilteredService.execute({
       page: 1,
+      ordenation: '',
       name: '',
       categories: [],
       description: '',

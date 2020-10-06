@@ -14,7 +14,7 @@ class JWTTokenProvider implements ITokenProvider {
   public async generateToken(user_id: string): Promise<string> {
     const token = sign({}, String(process.env.SECRET), {
       subject: user_id,
-      expiresIn: '30d',
+      expiresIn: '10d',
     });
 
     return token;

@@ -1,10 +1,16 @@
-import { Repository, getRepository } from 'typeorm';
+import {
+  Repository,
+  getRepository,
+  // SelectQueryBuilder,
+  // getManager,
+} from 'typeorm';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 import ICreateProductDTO from '@modules/products/dtos/ICreateProductDTO';
 import IUpdateProductDTO from '@modules/products/dtos/IUpdateProductDTO';
 
 import Product from '@modules/products/infra/typeorm/entities/Product';
+// import Store from '@modules/stores/infra/typeorm/entities/Store';
 
 class ProductsRepository implements IProductsRepository {
   private ormRepository: Repository<Product>;
@@ -101,6 +107,7 @@ class ProductsRepository implements IProductsRepository {
 
   public async findByFilters(
     page: number,
+    ordenation: string,
     name: string,
     description: string,
     gender: string,
@@ -111,24 +118,26 @@ class ProductsRepository implements IProductsRepository {
   ): Promise<Product[]> {
     const queryBuilder = this.ormRepository.createQueryBuilder('product');
 
-    queryBuilder.innerJoinAndSelect('product.category', 'category');
-
     if (name) {
       queryBuilder.andWhere(
         `translate(lower(product.name), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-        '%'||translate(lower('${name}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${queryBuilder.escape(
+            name,
+          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (description) {
       queryBuilder.andWhere(
         `translate(lower(product.description), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-        '%'||translate(lower('${description}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${queryBuilder.escape(
+            description,
+          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (categories.length) {
-      queryBuilder.andWhere('category.id IN (:...categories)', {
+      queryBuilder.andWhere('product.category IN (:...categories)', {
         categories,
       });
     }
@@ -153,15 +162,176 @@ class ProductsRepository implements IProductsRepository {
       queryBuilder.andWhere('product.store_id IN (:...stores)', { stores });
     }
 
-    const products = await queryBuilder
-      .innerJoinAndSelect('product.store', 'store')
+    queryBuilder.innerJoinAndSelect('products.category', 'category');
+
+    const products = [] as Product[];
+
+    await queryBuilder
+      .innerJoinAndSelect('products.store', 'store')
       .skip((page - 1) * 12)
       .take(12)
-      .orderBy('product.price')
+      .orderBy(`products.${ordenation || 'price'}`)
       .getMany();
 
     return products;
   }
+
+  /*
+  public async findByFilters(
+    page: number,
+    ordenation: string,
+    name: string,
+    description: string,
+    gender: string,
+    minimum_price: number,
+    maximum_price: number,
+    categories: Array<string>,
+    stores: Array<string>,
+  ): Promise<Product[]> {
+    if (!stores || stores.length === 0) {
+      const ormRepositoryStore = getRepository(Store);
+
+      // eslint-disable-next-line no-param-reassign
+      stores = ((await ormRepositoryStore.find()) || []).map((store) => {
+        return String(store.id);
+      });
+    }
+
+    const sqlUnionStore: string[] = [];
+
+    stores.forEach(async (store_id) => {
+      const sqlUnion = this.getSubQueryFindByFilters(
+        store_id,
+        ordenation,
+        name,
+        description,
+        gender,
+        minimum_price,
+        maximum_price,
+        categories,
+      ).getSql();
+
+      sqlUnionStore.push(sqlUnion);
+    });
+
+    const limit = 12;
+    const offset = (page - 1) * 12;
+
+    const results = await getManager().query(`
+      select origem.id,
+             origem.name,
+             origem.description,
+             origem.image,
+             origem.link,
+             origem.price,
+             origem.size,
+             origem.color,
+             origem.gender
+        from (${sqlUnionStore.join('\n union all \n')}) as origem
+       order by origem.number, origem.${ordenation || 'price'}
+       limit ${limit}
+      offset ${offset}
+    `);
+
+    console.log(results);
+
+    // const queryBuilder = this.ormRepository.createQueryBuilder('products');
+
+    // queryBuilder.innerJoinAndSelect('products.category', 'category');
+
+    const products = [] as Product[];
+
+    // await queryBuilder
+    //   .innerJoinAndSelect('products.store', 'store')
+    //   .skip((page - 1) * 12)
+    //   .take(12)
+    //   .orderBy(`products.${ordenation || 'price'}`)
+    //   .getMany();
+
+    return products;
+  }
+  */
+
+  /*
+  private getSubQueryFindByFilters(
+    store_id: string,
+    ordenation: string,
+    name: string,
+    description: string,
+    gender: string,
+    minimum_price: number,
+    maximum_price: number,
+    categories: Array<string>,
+  ): SelectQueryBuilder<Product> {
+    //   const queryBuilder = this.ormRepository.createQueryBuilder('product');
+
+    //   const sql = `
+    //   select row_number() over (order by product.price) as number,
+    //          product.id,
+    //          product.name,
+    //          product.description,
+    //          product.image,
+    //          product.link,
+    //          product.price,
+    //          product.size,
+    //          product.color,
+    //          product.gender,
+    //    where product.store_id = '${store_id}'
+    // `;
+
+    const queryBuilder = this.ormRepository.createQueryBuilder('product');
+
+    queryBuilder.addSelect(
+      'row_number() over (order by product.price) as number',
+    );
+
+    queryBuilder.andWhere(
+      `product.store_id = ${queryBuilder.escape(store_id)}`,
+    );
+
+    if (name) {
+      queryBuilder.andWhere(
+        `translate(lower(product.name), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
+          '%'||translate(lower('${queryBuilder.escape(
+            name,
+          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+      );
+    }
+
+    if (description) {
+      queryBuilder.andWhere(
+        `translate(lower(product.description), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
+          '%'||translate(lower('${queryBuilder.escape(
+            description,
+          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+      );
+    }
+
+    if (categories.length) {
+      queryBuilder.andWhere(
+        `category.id IN (${queryBuilder.escape(categories.join(','))})`,
+      );
+    }
+
+    if (gender) {
+      queryBuilder.andWhere(`product.gender = ${queryBuilder.escape(gender)}`);
+    }
+
+    if (minimum_price) {
+      queryBuilder.andWhere(
+        `product.price >= ${queryBuilder.escape(String(minimum_price))}`,
+      );
+    }
+
+    if (maximum_price) {
+      queryBuilder.andWhere(
+        `product.price <= ${queryBuilder.escape(String(maximum_price))}`,
+      );
+    }
+
+    return queryBuilder;
+  }
+  */
 
   public async countByFilters(
     name: string,
@@ -179,14 +349,18 @@ class ProductsRepository implements IProductsRepository {
     if (name) {
       queryBuilder.andWhere(
         `translate(lower(product.name), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-        '%'||translate(lower('${name}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${queryBuilder.escape(
+            name,
+          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (description) {
       queryBuilder.andWhere(
         `translate(lower(product.description), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-        '%'||translate(lower('${description}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${queryBuilder.escape(
+            description,
+          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 

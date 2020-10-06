@@ -16,6 +16,7 @@ interface IProductsRepository {
 
   findByFilters(
     page: number,
+    ordenation: string,
     name: string,
     description: string,
     gender: string,

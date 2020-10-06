@@ -31,10 +31,6 @@ export default class CreateProducts1601065654751 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'category',
-            type: 'varchar',
-          },
-          {
             name: 'link',
             type: 'varchar',
           },
