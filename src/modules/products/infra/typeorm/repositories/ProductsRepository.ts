@@ -1,8 +1,8 @@
 import {
   Repository,
   getRepository,
-  // SelectQueryBuilder,
-  // getManager,
+  SelectQueryBuilder,
+  getManager,
 } from 'typeorm';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
@@ -10,7 +10,29 @@ import ICreateProductDTO from '@modules/products/dtos/ICreateProductDTO';
 import IUpdateProductDTO from '@modules/products/dtos/IUpdateProductDTO';
 
 import Product from '@modules/products/infra/typeorm/entities/Product';
-// import Store from '@modules/stores/infra/typeorm/entities/Store';
+import Store from '@modules/stores/infra/typeorm/entities/Store';
+import Category from '@modules/categories/infra/typeorm/entities/Category';
+
+interface IProductFetch {
+  product_id: string;
+  product_name: string;
+  product_description: string;
+  product_image: string;
+  product_link: string;
+  product_price: string;
+  product_size: string;
+  product_color: string;
+  product_gender: string;
+  category_id: string;
+  category_name: string;
+  category_description: string;
+  category_keywords: string;
+  store_id: string;
+  store_name: string;
+  store_comission: number;
+  store_link: string;
+  store_api: string;
+}
 
 class ProductsRepository implements IProductsRepository {
   private ormRepository: Repository<Product>;
@@ -105,7 +127,7 @@ class ProductsRepository implements IProductsRepository {
     return store;
   }
 
-  public async findByFilters(
+  public async findByFilters_old(
     page: number,
     ordenation: string,
     name: string,
@@ -118,28 +140,21 @@ class ProductsRepository implements IProductsRepository {
   ): Promise<Product[]> {
     const queryBuilder = this.ormRepository.createQueryBuilder('product');
 
+    queryBuilder.innerJoinAndSelect('product.category', 'category');
+    queryBuilder.innerJoinAndSelect('product.store', 'store');
+
     if (name) {
       queryBuilder.andWhere(
         `translate(lower(product.name), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-          '%'||translate(lower('${queryBuilder.escape(
-            name,
-          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${name}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (description) {
       queryBuilder.andWhere(
         `translate(lower(product.description), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-          '%'||translate(lower('${queryBuilder.escape(
-            description,
-          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${description}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
-    }
-
-    if (categories.length) {
-      queryBuilder.andWhere('product.category IN (:...categories)', {
-        categories,
-      });
     }
 
     if (gender) {
@@ -158,25 +173,25 @@ class ProductsRepository implements IProductsRepository {
       });
     }
 
+    if (categories.length) {
+      queryBuilder.andWhere('product.category_id IN (:...categories)', {
+        categories,
+      });
+    }
+
     if (stores.length) {
       queryBuilder.andWhere('product.store_id IN (:...stores)', { stores });
     }
 
-    queryBuilder.innerJoinAndSelect('products.category', 'category');
-
-    const products = [] as Product[];
-
-    await queryBuilder
-      .innerJoinAndSelect('products.store', 'store')
+    const products = await queryBuilder
       .skip((page - 1) * 12)
       .take(12)
-      .orderBy(`products.${ordenation || 'price'}`)
+      .orderBy(`product.${ordenation || 'price'}`)
       .getMany();
 
     return products;
   }
 
-  /*
   public async findByFilters(
     page: number,
     ordenation: string,
@@ -188,19 +203,24 @@ class ProductsRepository implements IProductsRepository {
     categories: Array<string>,
     stores: Array<string>,
   ): Promise<Product[]> {
-    if (!stores || stores.length === 0) {
-      const ormRepositoryStore = getRepository(Store);
+    const ormRepositoryStore = getRepository(Store);
 
-      // eslint-disable-next-line no-param-reassign
-      stores = ((await ormRepositoryStore.find()) || []).map((store) => {
-        return String(store.id);
+    const queryBuilderStore = ormRepositoryStore.createQueryBuilder('store');
+
+    if (stores && stores.length) {
+      queryBuilderStore.where('store.id IN (:...stores)', {
+        stores,
       });
     }
 
+    queryBuilderStore.orderBy('store.commission', 'DESC');
+
+    const storeSearch = await queryBuilderStore.getMany();
+
     const sqlUnionStore: string[] = [];
 
-    stores.forEach(async (store_id) => {
-      const sqlUnion = this.getSubQueryFindByFilters(
+    storeSearch.forEach(async ({ id: store_id }) => {
+      const sqlUnion = `(${this.getSubQueryFindByFilters(
         store_id,
         ordenation,
         name,
@@ -209,7 +229,7 @@ class ProductsRepository implements IProductsRepository {
         minimum_price,
         maximum_price,
         categories,
-      ).getSql();
+      ).getSql()})`;
 
       sqlUnionStore.push(sqlUnion);
     });
@@ -218,41 +238,50 @@ class ProductsRepository implements IProductsRepository {
     const offset = (page - 1) * 12;
 
     const results = await getManager().query(`
-      select origem.id,
-             origem.name,
-             origem.description,
-             origem.image,
-             origem.link,
-             origem.price,
-             origem.size,
-             origem.color,
-             origem.gender
+      select *
         from (${sqlUnionStore.join('\n union all \n')}) as origem
-       order by origem.number, origem.${ordenation || 'price'}
+       order by origem.product_line ASC, 
+                origem.store_commission DESC
        limit ${limit}
       offset ${offset}
     `);
 
-    console.log(results);
+    const products: Product[] = [];
 
-    // const queryBuilder = this.ormRepository.createQueryBuilder('products');
+    results.forEach((element: IProductFetch) => {
+      const product = getManager().create(Product, {
+        id: element.product_id,
+        name: element.product_name,
+        description: element.product_description,
+        image: element.product_image,
+        link: element.product_link,
+        price: element.product_price,
+        size: element.product_size,
+        color: element.product_color,
+        gender: element.product_gender,
+      });
 
-    // queryBuilder.innerJoinAndSelect('products.category', 'category');
+      product.category = getManager().create(Category, {
+        id: element.category_id,
+        name: element.category_name,
+        description: element.category_description,
+        keywords: element.category_keywords,
+      });
 
-    const products = [] as Product[];
+      product.store = getManager().create(Store, {
+        id: element.store_id,
+        name: element.store_name,
+        commission: element.store_comission,
+        link: element.store_link,
+        api: element.store_api,
+      });
 
-    // await queryBuilder
-    //   .innerJoinAndSelect('products.store', 'store')
-    //   .skip((page - 1) * 12)
-    //   .take(12)
-    //   .orderBy(`products.${ordenation || 'price'}`)
-    //   .getMany();
+      products.push(product);
+    });
 
     return products;
   }
-  */
 
-  /*
   private getSubQueryFindByFilters(
     store_id: string,
     ordenation: string,
@@ -263,75 +292,55 @@ class ProductsRepository implements IProductsRepository {
     maximum_price: number,
     categories: Array<string>,
   ): SelectQueryBuilder<Product> {
-    //   const queryBuilder = this.ormRepository.createQueryBuilder('product');
-
-    //   const sql = `
-    //   select row_number() over (order by product.price) as number,
-    //          product.id,
-    //          product.name,
-    //          product.description,
-    //          product.image,
-    //          product.link,
-    //          product.price,
-    //          product.size,
-    //          product.color,
-    //          product.gender,
-    //    where product.store_id = '${store_id}'
-    // `;
-
     const queryBuilder = this.ormRepository.createQueryBuilder('product');
 
     queryBuilder.addSelect(
-      'row_number() over (order by product.price) as number',
+      'row_number() over (order by product.price) as product_line',
     );
 
-    queryBuilder.andWhere(
-      `product.store_id = ${queryBuilder.escape(store_id)}`,
-    );
+    queryBuilder.innerJoinAndSelect('product.category', 'category');
+    queryBuilder.innerJoinAndSelect('product.store', 'store');
+
+    queryBuilder.andWhere(`product.store_id = '${store_id}'`);
 
     if (name) {
       queryBuilder.andWhere(
         `translate(lower(product.name), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-          '%'||translate(lower('${queryBuilder.escape(
-            name,
-          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${name}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (description) {
       queryBuilder.andWhere(
         `translate(lower(product.description), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-          '%'||translate(lower('${queryBuilder.escape(
-            description,
-          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${description}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (categories.length) {
       queryBuilder.andWhere(
-        `category.id IN (${queryBuilder.escape(categories.join(','))})`,
+        `category.id IN (${categories
+          .map((category) => `'${category}'`)
+          .join(',')})`,
       );
     }
 
     if (gender) {
-      queryBuilder.andWhere(`product.gender = ${queryBuilder.escape(gender)}`);
+      queryBuilder.andWhere(`product.gender = '${gender}'`);
     }
 
     if (minimum_price) {
-      queryBuilder.andWhere(
-        `product.price >= ${queryBuilder.escape(String(minimum_price))}`,
-      );
+      queryBuilder.andWhere(`product.price >= ${String(minimum_price)}`);
     }
 
     if (maximum_price) {
-      queryBuilder.andWhere(
-        `product.price <= ${queryBuilder.escape(String(maximum_price))}`,
-      );
+      queryBuilder.andWhere(`product.price <= ${String(maximum_price)}`);
     }
+
+    queryBuilder.orderBy(`product.${ordenation || 'price'}`);
 
     return queryBuilder;
   }
-  */
 
   public async countByFilters(
     name: string,
@@ -344,30 +353,18 @@ class ProductsRepository implements IProductsRepository {
   ): Promise<number> {
     const queryBuilder = this.ormRepository.createQueryBuilder('product');
 
-    queryBuilder.innerJoinAndSelect('product.category', 'category');
-
     if (name) {
       queryBuilder.andWhere(
         `translate(lower(product.name), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-          '%'||translate(lower('${queryBuilder.escape(
-            name,
-          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${name}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
     }
 
     if (description) {
       queryBuilder.andWhere(
         `translate(lower(product.description), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc') like 
-          '%'||translate(lower('${queryBuilder.escape(
-            description,
-          )}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
+          '%'||translate(lower('${description}'), 'àáâãäéèëêíìïîóòõöôúùüûç', 'aaaaaeeeeiiiiooooouuuuc')||'%'`,
       );
-    }
-
-    if (categories.length) {
-      queryBuilder.andWhere('category.id IN (:...categories)', {
-        categories,
-      });
     }
 
     if (gender) {
@@ -383,6 +380,12 @@ class ProductsRepository implements IProductsRepository {
     if (maximum_price) {
       queryBuilder.andWhere('product.price <= :maximum_price', {
         maximum_price,
+      });
+    }
+
+    if (categories.length) {
+      queryBuilder.andWhere('product.category_id IN (:...categories)', {
+        categories,
       });
     }
 

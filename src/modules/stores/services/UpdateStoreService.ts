@@ -9,6 +9,8 @@ interface IRequest {
 
   name: string;
 
+  commission: number;
+
   api: string;
 
   link: string;
@@ -21,10 +23,17 @@ class UpdateStoreService {
     private storesRepository: IStoresRepository,
   ) {}
 
-  public async execute({ id, name, api, link }: IRequest): Promise<Store> {
+  public async execute({
+    id,
+    name,
+    commission,
+    api,
+    link,
+  }: IRequest): Promise<Store> {
     const store = await this.storesRepository.update({
       id,
       name,
+      commission,
       api,
       link,
     });

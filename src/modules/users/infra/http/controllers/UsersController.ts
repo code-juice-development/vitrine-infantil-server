@@ -34,12 +34,14 @@ class UsersController {
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
-    const { email, password } = request.body;
+    const { name, email, image_url, password } = request.body;
 
     const createUserService = container.resolve(CreateUserService);
 
     const user = await createUserService.execute({
+      name,
       email,
+      image_url,
       password,
     });
 
@@ -51,13 +53,15 @@ class UsersController {
   public async update(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    const { email, password } = request.body;
+    const { name, email, image_url, password } = request.body;
 
     const updateUserService = container.resolve(UpdateUserService);
 
     await updateUserService.execute({
       id,
+      name,
       email,
+      image_url,
       password,
     });
 

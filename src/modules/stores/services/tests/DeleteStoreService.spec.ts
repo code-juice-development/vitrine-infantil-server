@@ -13,9 +13,10 @@ describe('Delete Store Service', () => {
 
   it('should be able to delete a Store', async () => {
     const store = await fakeStoresRepository.create({
-      api: 'www.store.com/admin',
-      link: 'www.store.com',
       name: 'Store',
+      commission: 5,
+      link: 'www.store.com',
+      api: 'www.store.com/admin',
     });
 
     const { id } = store;

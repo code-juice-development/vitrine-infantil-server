@@ -6,6 +6,7 @@ const updateStoreMiddleware = celebrate({
   }),
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required(),
+    commission: Joi.number().required(),
     link: Joi.string().required(),
     api: Joi.string().required(),
   }),

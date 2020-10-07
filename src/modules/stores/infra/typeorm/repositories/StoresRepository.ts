@@ -14,9 +14,15 @@ class StoresRepository implements IStoresRepository {
     this.ormRepository = getRepository(Store);
   }
 
-  public async create({ name, api, link }: ICreateStoreDTO): Promise<Store> {
+  public async create({
+    name,
+    commission,
+    api,
+    link,
+  }: ICreateStoreDTO): Promise<Store> {
     const store = this.ormRepository.create({
       name,
+      commission,
       api,
       link,
     });
@@ -29,12 +35,14 @@ class StoresRepository implements IStoresRepository {
   public async update({
     id,
     name,
+    commission,
     api,
     link,
   }: IUpdateStoreDTO): Promise<Store> {
     const store = this.ormRepository.create({
       id,
       name,
+      commission,
       api,
       link,
     });

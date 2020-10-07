@@ -33,6 +33,7 @@ class ProductsSearchController {
       stores: stores ? String(stores).split(',') : [],
     });
 
+    response.header('Access-Control-Expose-Headers', 'X-Total-Count');
     response.header('X-Total-Count', String(total));
 
     return response.json(products);

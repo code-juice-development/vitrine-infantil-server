@@ -18,6 +18,9 @@ class Store {
   name: string;
 
   @Column()
+  commission: number;
+
+  @Column()
   link: string;
 
   @Column()

@@ -6,7 +6,11 @@ import IHashProvider from '@modules/users/providers/HashProvider/models/IHashPro
 import User from '@modules/users/infra/typeorm/entities/User';
 
 interface IRequest {
+  name: string;
+
   email: string;
+
+  image_url: string;
 
   password: string;
 }
@@ -21,11 +25,18 @@ class CreateUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ email, password }: IRequest): Promise<User> {
+  public async execute({
+    name,
+    email,
+    image_url,
+    password,
+  }: IRequest): Promise<User> {
     const hashedPassword = await this.hashProvider.generateHash(password);
 
     const user = await this.usersRepository.create({
+      name,
       email,
+      image_url,
       password: hashedPassword,
     });
 

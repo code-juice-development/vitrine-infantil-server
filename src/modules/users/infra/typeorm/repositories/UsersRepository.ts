@@ -14,9 +14,16 @@ class UsersRepository implements IUsersRepository {
     this.ormRepository = getRepository(User);
   }
 
-  public async create({ email, password }: ICreateUserDTO): Promise<User> {
+  public async create({
+    name,
+    email,
+    image_url,
+    password,
+  }: ICreateUserDTO): Promise<User> {
     const user = this.ormRepository.create({
+      name,
       email,
+      image_url,
       password,
     });
 
@@ -25,10 +32,18 @@ class UsersRepository implements IUsersRepository {
     return user;
   }
 
-  public async update({ id, email, password }: IUpdateUserDTO): Promise<User> {
+  public async update({
+    id,
+    name,
+    email,
+    image_url,
+    password,
+  }: IUpdateUserDTO): Promise<User> {
     const user = this.ormRepository.create({
       id,
+      name,
       email,
+      image_url,
       password,
     });
 

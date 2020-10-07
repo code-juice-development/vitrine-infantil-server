@@ -13,12 +13,16 @@ describe('List Users Service', () => {
 
   it('should be able to list all Users', async () => {
     const userJohnDoe = await fakeUsersRepository.create({
+      name: 'John Doe',
       email: 'johndoe@example.com',
+      image_url: '',
       password: 'adm@123',
     });
 
     const userJohnDue = await fakeUsersRepository.create({
+      name: 'John Due',
       email: 'johndue@example.com',
+      image_url: '',
       password: 'adm@321',
     });
 

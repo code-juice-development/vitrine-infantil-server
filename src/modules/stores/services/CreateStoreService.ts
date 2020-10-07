@@ -7,6 +7,8 @@ import Store from '@modules/stores/infra/typeorm/entities/Store';
 interface IRequest {
   name: string;
 
+  commission: number;
+
   api: string;
 
   link: string;
@@ -19,9 +21,15 @@ class CreateStoreService {
     private storesRepository: IStoresRepository,
   ) {}
 
-  public async execute({ name, api, link }: IRequest): Promise<Store> {
+  public async execute({
+    name,
+    commission,
+    api,
+    link,
+  }: IRequest): Promise<Store> {
     const store = await this.storesRepository.create({
       name,
+      commission,
       api,
       link,
     });

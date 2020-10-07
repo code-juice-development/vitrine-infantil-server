@@ -13,7 +13,9 @@ describe('Delete User Service', () => {
 
   it('should be able to delete a User', async () => {
     const user = await fakeUsersRepository.create({
+      name: 'John Doe',
       email: 'johndoe@example.com',
+      image_url: '',
       password: 'adm@123',
     });
 

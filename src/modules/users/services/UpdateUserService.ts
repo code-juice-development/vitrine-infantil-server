@@ -8,7 +8,11 @@ import User from '@modules/users/infra/typeorm/entities/User';
 interface IRequest {
   id: string;
 
+  name: string;
+
   email: string;
+
+  image_url: string;
 
   password: string;
 }
@@ -20,12 +24,20 @@ class UpdateUserService {
     private usersRepository: IUsersRepository,
   ) {}
 
-  public async execute({ id, email, password }: IRequest): Promise<User> {
+  public async execute({
+    id,
+    name,
+    email,
+    image_url,
+    password,
+  }: IRequest): Promise<User> {
     const hashedPassword = await hash(password, 8);
 
     const user = await this.usersRepository.update({
       id,
+      name,
       email,
+      image_url,
       password: hashedPassword,
     });
 

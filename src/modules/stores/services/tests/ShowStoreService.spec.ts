@@ -15,9 +15,10 @@ describe('Show Store Service', () => {
 
   it('should be able to show Store', async () => {
     const store = await fakeStoresRepository.create({
+      name: 'Dream',
+      commission: 5,
       api: 'www.dream.com/admin',
       link: 'www.dream.com',
-      name: 'Dream',
     });
 
     const findStore = await showStoreService.execute({ id: store.id });

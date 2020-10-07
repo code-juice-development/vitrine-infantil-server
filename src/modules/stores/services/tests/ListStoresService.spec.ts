@@ -13,15 +13,17 @@ describe('List Store Service', () => {
 
   it('should be able to list all Stores', async () => {
     const storeDream = await fakeStoresRepository.create({
-      api: 'www.dream.com/admin',
-      link: 'www.dream.com',
       name: 'Dream',
+      commission: 5,
+      link: 'www.dream.com',
+      api: 'www.dream.com/admin',
     });
 
     const storeSweet = await fakeStoresRepository.create({
-      api: 'www.sweet.com/admin',
-      link: 'www.sweet.com',
       name: 'Sweet',
+      commission: 5,
+      link: 'www.sweet.com',
+      api: 'www.sweet.com/admin',
     });
 
     const stores = await listStoresService.execute();

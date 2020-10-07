@@ -24,7 +24,9 @@ describe('Create Session Service', () => {
     );
 
     const user = await createUserService.execute({
+      name: 'John Doe',
       email: 'johndoe@example.com',
+      image_url: '',
       password: 'adm@123',
     });
 
@@ -72,7 +74,9 @@ describe('Create Session Service', () => {
     );
 
     await createUserService.execute({
+      name: 'John Doe',
       email: 'johndoe@example.com',
+      image_url: '',
       password: 'adm@123',
     });
 

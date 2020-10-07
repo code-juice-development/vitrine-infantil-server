@@ -29,12 +29,13 @@ class StoresController {
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
-    const { name, api, link } = request.body;
+    const { name, commission, api, link } = request.body;
 
     const createStoreService = container.resolve(CreateStoreService);
 
     const store = await createStoreService.execute({
       name,
+      commission,
       api,
       link,
     });
@@ -47,13 +48,14 @@ class StoresController {
   public async update(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    const { name, api, link } = request.body;
+    const { name, commission, api, link } = request.body;
 
     const updateStoreService = container.resolve(UpdateStoreService);
 
     const store = await updateStoreService.execute({
       id,
       name,
+      commission,
       api,
       link,
     });

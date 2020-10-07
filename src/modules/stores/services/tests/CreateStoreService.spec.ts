@@ -13,9 +13,10 @@ describe('Create Store Service', () => {
 
   it('should be able to create a new Store', async () => {
     const store = await createStoreService.execute({
-      api: 'www.store.com/admin',
-      link: 'www.store.com/admin',
       name: 'Store',
+      commission: 5,
+      link: 'www.store.com/admin',
+      api: 'www.store.com/admin',
     });
 
     expect(store).toHaveProperty('id');

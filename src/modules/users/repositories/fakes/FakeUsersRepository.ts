@@ -10,20 +10,31 @@ import User from '@modules/users/infra/typeorm/entities/User';
 class FakeUsersRepository implements IUsersRepository {
   private users: User[] = [];
 
-  public async create(userData: ICreateUserDTO): Promise<User> {
+  public async create({
+    name,
+    email,
+    image_url,
+    password,
+  }: ICreateUserDTO): Promise<User> {
     const user = new User();
 
-    Object.assign(user, { id: v4() }, userData);
+    Object.assign(user, { id: v4() }, { name, email, image_url, password });
 
     this.users.push(user);
 
     return user;
   }
 
-  public async update({ id, email, password }: IUpdateUserDTO): Promise<User> {
+  public async update({
+    id,
+    name,
+    email,
+    image_url,
+    password,
+  }: IUpdateUserDTO): Promise<User> {
     const user = this.users.find((userFind) => userFind.id === id);
 
-    Object.assign(user, { id, email, password });
+    Object.assign(user, { id, name, email, image_url, password });
 
     return user ?? new User();
   }
