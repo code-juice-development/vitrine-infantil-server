@@ -1,6 +1,8 @@
 import { v4 } from 'uuid';
 
-import IStoresRepository from '@modules/stores/repositories/IStoresRepository';
+import IStoresRepository, {
+  IStoresWithCount,
+} from '@modules/stores/repositories/IStoresRepository';
 
 import ICreateStoreDTO from '@modules/stores/dtos/ICreateStoreDTO';
 import IUpdateStoreDTO from '@modules/stores/dtos/IUpdateStoreDTO';
@@ -51,6 +53,13 @@ class FakeStoresRepository implements IStoresRepository {
     const store = this.stores.find((storeFind) => storeFind.id === id);
 
     return store;
+  }
+
+  public async findByNameWithPagination(
+    _name: string,
+    _page: number,
+  ): Promise<IStoresWithCount> {
+    throw new Error('Method not implemented.');
   }
 
   public async findAll(): Promise<Store[]> {
