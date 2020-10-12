@@ -4,7 +4,8 @@ import { container } from 'tsyringe';
 import CreateProductService from '@modules/products/services/CreateProductService';
 import UpdateProductService from '@modules/products/services/UpdateProductService';
 import DeleteProductService from '@modules/products/services/DeleteProductService';
-import ListProductService from '@modules/products/services/ListProductsService';
+// import ListProductService from '@modules/products/services/ListProductsService';
+import ListProductsFilteredService from '@modules/products/services/ListProductsFilteredService';
 import ShowProductService from '@modules/products/services/ShowProductService';
 
 class ProductsController {
@@ -86,9 +87,26 @@ class ProductsController {
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
-    const listProductsService = container.resolve(ListProductService);
+    const { name, page } = request.query;
 
-    const products = await listProductsService.execute();
+    const listProductsFilteredService = container.resolve(
+      ListProductsFilteredService,
+    );
+
+    const { products, total } = await listProductsFilteredService.execute({
+      page: Number(page ?? 1),
+      ordenation: '',
+      name: String(name ?? ''),
+      description: '',
+      gender: '',
+      minimum_price: 0,
+      maximum_price: 0,
+      categories: [],
+      stores: [],
+    });
+
+    response.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    response.header('X-Total-Count', String(total));
 
     return response.json(products);
   }

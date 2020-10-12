@@ -9,6 +9,7 @@ import categoriesPublicRouter from '@modules/categories/infra/http/routes/catego
 import productsRouter from '@modules/products/infra/http/routes/products.routes';
 import productsPublicRouter from '@modules/products/infra/http/routes/products-public.routes';
 import productsUpdateRouter from '@modules/products/infra/http/routes/products-update.routes';
+import logsRouter from '@modules/logs/infra/http/routes/logs.routes';
 
 const routes = Router();
 
@@ -19,6 +20,7 @@ routes.use('/stores', storesRouter);
 routes.use('/categories', categoriesRouter);
 routes.use('/products', productsRouter);
 routes.use('/products-update', productsUpdateRouter);
+routes.use('/logs', logsRouter);
 
 /** @description Public Routes */
 routes.use('/stores-public', storesPublicRouter);

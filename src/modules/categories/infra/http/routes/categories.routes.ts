@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import CategoriesController from '@modules/categories/infra/http/controllers/CategoriesController';
 
+import indexCategoriesMiddleware from '@modules/categories/infra/http/middlewares/indexCategoriesMiddleware';
 import showCategoryMiddleware from '@modules/categories/infra/http/middlewares/showCategoryMiddleware';
 import createCategoryMiddleware from '@modules/categories/infra/http/middlewares/createCategoryMiddleware';
 import updateCategoryMiddleware from '@modules/categories/infra/http/middlewares/updateCategoryMiddleware';
@@ -15,7 +16,11 @@ const categoriesController = new CategoriesController();
 
 categoriesRouter.use(isUserLoggedIn);
 
-categoriesRouter.get('/', categoriesController.index);
+categoriesRouter.get(
+  '/',
+  indexCategoriesMiddleware,
+  categoriesController.index,
+);
 categoriesRouter.get('/:id', showCategoryMiddleware, categoriesController.show);
 categoriesRouter.post(
   '/',

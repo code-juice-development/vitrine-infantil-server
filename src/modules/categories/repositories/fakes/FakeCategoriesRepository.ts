@@ -1,6 +1,8 @@
 import { v4 } from 'uuid';
 
-import ICategoriesRepository from '@modules/categories/repositories/ICategoriesRepository';
+import ICategoriesRepository, {
+  ICategoriesWithCount,
+} from '@modules/categories/repositories/ICategoriesRepository';
 
 import ICreateCategoryDTO from '@modules/categories/dtos/ICreateCategoryDTO';
 import IUpdateCategoryDTO from '@modules/categories/dtos/IUpdateCategoryDTO';
@@ -59,6 +61,20 @@ class FakeCategoriesRepository implements ICategoriesRepository {
     );
 
     return category;
+  }
+
+  public async findByNameWithPagination(
+    name: string,
+    page: number,
+  ): Promise<ICategoriesWithCount> {
+    const categories = this.categories.filter(
+      (actualCategory) => !(name && actualCategory.name !== name),
+    );
+
+    return {
+      total: categories.length,
+      categories: categories.slice((page - 1) * 10, 1),
+    };
   }
 
   public async findAll(): Promise<Category[]> {

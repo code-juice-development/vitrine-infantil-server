@@ -1,11 +1,14 @@
 import { inject, injectable, container } from 'tsyringe';
-import Parser from 'rss-parser';
+import Parser, { Output } from 'rss-parser';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 
 import ShowCategoryFromKeywordService from '@modules/categories/services/ShowCategoryFromKeywordService';
+import ShowStoreService from '@modules/stores/services/ShowStoreService';
+import CreateLogService from '@modules/logs/services/CreateLogService';
 
 import { getValueFromRegex } from '@shared/utils/string';
+import Store from '@modules/stores/infra/typeorm/entities/Store';
 
 interface IRequest {
   store_id: string;
@@ -17,6 +20,12 @@ interface IRequest {
 class UpdateProductsFromStoreService {
   private showCategoryFromKeywordService: ShowCategoryFromKeywordService;
 
+  private showStoreService: ShowStoreService;
+
+  private createLogService: CreateLogService;
+
+  private store: Store;
+
   constructor(
     @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
@@ -24,24 +33,18 @@ class UpdateProductsFromStoreService {
     this.showCategoryFromKeywordService = container.resolve(
       ShowCategoryFromKeywordService,
     );
+    this.showStoreService = container.resolve(ShowStoreService);
+    this.createLogService = container.resolve(CreateLogService);
   }
 
   public async execute({ store_id, api }: IRequest): Promise<void> {
-    const parser = new Parser({
-      customFields: { item: this.getRssCustomFields() },
-    });
+    this.store = await this.showStoreService.execute({ id: store_id });
 
-    await this.productsRepository.deleteByStore(store_id);
-
-    let data;
-
-    try {
-      data = await parser.parseURL(api);
-    } catch (error) {
-      /** @todo inserir log de erro */
-    }
+    const data = await this.getData(api);
 
     if (!data || !data.items) return;
+
+    await this.productsRepository.deleteByStore(store_id);
 
     data.items.forEach(async (element) => {
       const name = String(element['g:title']).substr(0, 254);
@@ -55,7 +58,7 @@ class UpdateProductsFromStoreService {
 
       const category = getValueFromRegex(element['g:product_type'], '[^>]*$');
 
-      const category_id = await this.getCategoryId(category);
+      const category_id = await this.getCategoryId(category, name);
 
       if (!category_id) return;
 
@@ -88,12 +91,51 @@ class UpdateProductsFromStoreService {
     ];
   }
 
-  private async getCategoryId(keyword: string): Promise<string> {
+  private async getData(api: string): Promise<Output | undefined> {
+    const parser = new Parser({
+      customFields: { item: this.getRssCustomFields() },
+    });
+
+    let data;
+
+    try {
+      data = await parser.parseURL(api);
+    } catch (error) {
+      this.createLogService.execute({
+        name: 'Erro ao importar os Produtos',
+        type: 'product',
+        description: 'Houve um erro ao conectar a API',
+        content: JSON.stringify(this.store),
+      });
+    }
+
+    return data;
+  }
+
+  private async getCategoryId(
+    keyword: string,
+    productName: string,
+  ): Promise<string> {
     const category = await this.showCategoryFromKeywordService.execute({
       keyword,
     });
 
-    return category ? category.id : '';
+    if (!category) {
+      this.createLogService.execute({
+        name: 'Erro ao importar o produto',
+        type: 'product',
+        description: `Não encontrado categoria correspondente`,
+        content: JSON.stringify({
+          store: this.store.name,
+          name: productName,
+          categoria: keyword,
+        }),
+      });
+
+      return '';
+    }
+
+    return category.id;
   }
 }
 

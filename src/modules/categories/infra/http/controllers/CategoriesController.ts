@@ -4,7 +4,7 @@ import { container } from 'tsyringe';
 import CreateCategoryService from '@modules/categories/services/CreateCategoryService';
 import UpdateCategoryService from '@modules/categories/services/UpdateCategoryService';
 import DeleteCategoryService from '@modules/categories/services/DeleteCategoryService';
-import ListCategoriesService from '@modules/categories/services/ListCategoriesService';
+import ListCategoriesFilteredService from '@modules/categories/services/ListCategoriesFilteredService';
 import ShowCategoryService from '@modules/categories/services/ShowCategoryService';
 
 class CategoriesController {
@@ -49,9 +49,19 @@ class CategoriesController {
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
-    const listCategoriesService = container.resolve(ListCategoriesService);
+    const { name, page } = request.query;
 
-    const categories = await listCategoriesService.execute();
+    const listCategoriesService = container.resolve(
+      ListCategoriesFilteredService,
+    );
+
+    const { total, categories } = await listCategoriesService.execute({
+      name: String(name ?? ''),
+      page: Number(page ?? 0),
+    });
+
+    response.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    response.header('X-Total-Count', String(total));
 
     return response.json(categories);
   }

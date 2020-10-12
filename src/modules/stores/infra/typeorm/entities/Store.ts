@@ -17,7 +17,7 @@ class Store {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   commission: number;
 
   @Column()

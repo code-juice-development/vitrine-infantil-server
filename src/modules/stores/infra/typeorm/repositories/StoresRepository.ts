@@ -1,6 +1,8 @@
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, Like } from 'typeorm';
 
-import IStoresRepository from '@modules/stores/repositories/IStoresRepository';
+import IStoresRepository, {
+  IStoresWithCount,
+} from '@modules/stores/repositories/IStoresRepository';
 
 import ICreateStoreDTO from '@modules/stores/dtos/ICreateStoreDTO';
 import IUpdateStoreDTO from '@modules/stores/dtos/IUpdateStoreDTO';
@@ -62,6 +64,29 @@ class StoresRepository implements IStoresRepository {
     const store = await this.ormRepository.findOne(id);
 
     return store;
+  }
+
+  public async findByNameWithPagination(
+    name: string,
+    page: number,
+  ): Promise<IStoresWithCount> {
+    const queryBuilder = this.ormRepository.createQueryBuilder();
+
+    if (name) {
+      queryBuilder.where({
+        name: Like(`%${name}%`),
+      });
+    }
+
+    const total = await queryBuilder.getCount();
+
+    if (page) {
+      queryBuilder.skip((page - 1) * 10).take(10);
+    }
+
+    const stores = (await queryBuilder.getMany()) || [];
+
+    return { total, stores };
   }
 
   public async findAll(): Promise<Store[]> {

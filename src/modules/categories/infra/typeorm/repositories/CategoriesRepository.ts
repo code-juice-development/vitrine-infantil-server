@@ -1,6 +1,8 @@
 import { Repository, getRepository, Like } from 'typeorm';
 
-import ICategoriesRepository from '@modules/categories/repositories/ICategoriesRepository';
+import ICategoriesRepository, {
+  ICategoriesWithCount,
+} from '@modules/categories/repositories/ICategoriesRepository';
 import ICreateCategoryDTO from '@modules/categories/dtos/ICreateCategoryDTO';
 import IUpdateCategoryDTO from '@modules/categories/dtos/IUpdateCategoryDTO';
 
@@ -65,6 +67,29 @@ class CategoriesRepository implements ICategoriesRepository {
     });
 
     return category;
+  }
+
+  public async findByNameWithPagination(
+    name: string,
+    page: number,
+  ): Promise<ICategoriesWithCount> {
+    const queryBuilder = this.ormRepository.createQueryBuilder();
+
+    if (name) {
+      queryBuilder.where({
+        name: Like(`%${name}%`),
+      });
+    }
+
+    const total = await queryBuilder.getCount();
+
+    if (page) {
+      queryBuilder.skip((page - 1) * 10).take(10);
+    }
+
+    const categories = (await queryBuilder.getMany()) || [];
+
+    return { total, categories };
   }
 
   public async findAll(): Promise<Category[]> {

@@ -1,33 +1,15 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import ListStoresService from '@modules/stores/services/ListStoresService';
+import Queue from '@shared/infra/bull/Queue';
+
 import CreateStoreService from '@modules/stores/services/CreateStoreService';
 import UpdateStoreService from '@modules/stores/services/UpdateStoreService';
 import DeleteStoreService from '@modules/stores/services/DeleteStoreService';
+import ListStoresFilteredService from '@modules/stores/services/ListStoresFilteredService';
 import ShowStoreService from '@modules/stores/services/ShowStoreService';
 
-import Queue from '@shared/infra/bull/Queue';
-
 class StoresController {
-  public async index(request: Request, response: Response): Promise<Response> {
-    const listStoresService = container.resolve(ListStoresService);
-
-    const stores = await listStoresService.execute();
-
-    return response.json(stores);
-  }
-
-  public async show(request: Request, response: Response): Promise<Response> {
-    const { id } = request.params;
-
-    const showStoreService = container.resolve(ShowStoreService);
-
-    const store = await showStoreService.execute({ id });
-
-    return response.json(store);
-  }
-
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, commission, api, link } = request.body;
 
@@ -73,6 +55,34 @@ class StoresController {
     await deleteStoreService.execute({ id });
 
     return response.status(204).send();
+  }
+
+  public async index(request: Request, response: Response): Promise<Response> {
+    const { name, page } = request.query;
+
+    const listStoresFilteredService = container.resolve(
+      ListStoresFilteredService,
+    );
+
+    const { total, stores } = await listStoresFilteredService.execute({
+      name: String(name ?? ''),
+      page: Number(page ?? 0),
+    });
+
+    response.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    response.header('X-Total-Count', String(total));
+
+    return response.json(stores);
+  }
+
+  public async show(request: Request, response: Response): Promise<Response> {
+    const { id } = request.params;
+
+    const showStoreService = container.resolve(ShowStoreService);
+
+    const store = await showStoreService.execute({ id });
+
+    return response.json(store);
   }
 }
 

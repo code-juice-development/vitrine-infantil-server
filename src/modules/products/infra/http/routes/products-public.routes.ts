@@ -2,8 +2,8 @@ import { Router } from 'express';
 
 import ProductsSearchController from '@modules/products/infra/http/controllers/ProductsSearchController';
 
-import indexProductMiddleware from '@modules/products/infra/http/middlewares/indexProductsMiddleware';
-import showProductMiddleware from '@modules/products/infra/http/middlewares/showProductMiddleware';
+import indexProductsPublicMiddleware from '@modules/products/infra/http/middlewares/indexProductsPublicMiddleware';
+import showProductPublicMiddleware from '@modules/products/infra/http/middlewares/showProductPublicMiddleware';
 
 const productsSearchRouter = Router();
 
@@ -11,12 +11,12 @@ const productsSearchController = new ProductsSearchController();
 
 productsSearchRouter.get(
   '/',
-  indexProductMiddleware,
+  indexProductsPublicMiddleware,
   productsSearchController.index,
 );
 productsSearchRouter.get(
   '/:id',
-  showProductMiddleware,
+  showProductPublicMiddleware,
   productsSearchController.show,
 );
 

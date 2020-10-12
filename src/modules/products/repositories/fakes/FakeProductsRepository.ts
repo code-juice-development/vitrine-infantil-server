@@ -152,7 +152,7 @@ class FakeProductsRepository implements IProductsRepository {
       return isValid;
     });
 
-    return searchProducts.slice((page - 1) * 10, 10);
+    return searchProducts.slice((page - 1) * 12, 12);
   }
 
   public async countByFilters(
