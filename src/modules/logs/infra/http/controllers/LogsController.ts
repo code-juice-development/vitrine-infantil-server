@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import DeleteLogService from '@modules/logs/services/DeleteLogService';
+import DeleteAllLogsService from '@modules/logs/services/DeleteAllLogsService';
 import ListLogsFilteredService from '@modules/logs/services/ListLogsFilteredService';
 import ShowLogService from '@modules/logs/services/ShowLogService';
 
@@ -12,6 +13,17 @@ class LogsController {
     const deleteLogService = container.resolve(DeleteLogService);
 
     await deleteLogService.execute({ id });
+
+    return response.status(204).send();
+  }
+
+  public async deleteAll(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const deleteAllLogsService = container.resolve(DeleteAllLogsService);
+
+    await deleteAllLogsService.execute();
 
     return response.status(204).send();
   }

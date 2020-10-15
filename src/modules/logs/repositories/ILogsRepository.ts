@@ -12,6 +12,8 @@ interface ILogsRepository {
 
   delete(id: string): Promise<boolean>;
 
+  deleteAll(): Promise<boolean>;
+
   findById(id: string): Promise<Log | undefined>;
 
   findByContentWithPagination(

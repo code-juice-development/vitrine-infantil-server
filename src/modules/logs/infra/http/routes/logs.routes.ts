@@ -16,6 +16,7 @@ logsRouter.use(isUserLoggedIn);
 
 logsRouter.get('/', indexLogsMiddlewares, logsController.index);
 logsRouter.get('/:id', showLogMiddleware, logsController.show);
+logsRouter.delete('/', logsController.deleteAll);
 logsRouter.delete('/:id', deleteLogMiddleware, logsController.delete);
 
 export default logsRouter;

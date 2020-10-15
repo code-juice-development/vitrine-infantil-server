@@ -8,6 +8,7 @@ import ShowStoreService from '@modules/stores/services/ShowStoreService';
 import CreateLogService from '@modules/logs/services/CreateLogService';
 
 import { getValueFromRegex } from '@shared/utils/string';
+
 import Store from '@modules/stores/infra/typeorm/entities/Store';
 
 interface IRequest {
@@ -47,16 +48,15 @@ class UpdateProductsFromStoreService {
     await this.productsRepository.deleteByStore(store_id);
 
     data.items.forEach(async (element) => {
-      const name = String(element['g:title']).substr(0, 254);
-      const description = String(element['g:description']).substr(0, 254);
+      const name = this.treatNameValue(element['g:title']);
+      const description = this.treatDescriptionValue(element['g:description']);
       const link = element['g:link'];
       const image = element['g:image_link'];
-      const price = getValueFromRegex(element['g:price'], '^[^a-zA-Z]*', '0');
+      const price = this.treatPriceValue(element['g:price']);
       const size = element['g:size'];
-      const color = element['g:color'] ?? 'Neutra';
-      const gender = element['g:gender'] ?? 'Unissex';
-
-      const category = getValueFromRegex(element['g:product_type'], '[^>]*$');
+      const color = this.treatColorValue(element['g:color']);
+      const gender = this.treatGenderValue(element['g:gender']);
+      const category = this.treatCategoryValue(element['g:product_type']);
 
       const category_id = await this.getCategoryId(category, name);
 
@@ -77,23 +77,21 @@ class UpdateProductsFromStoreService {
     });
   }
 
-  private getRssCustomFields(): Array<string> {
-    return [
-      'g:title',
-      'g:description',
-      'g:link',
-      'g:image_link',
-      'g:product_type',
-      'g:price',
-      'g:size',
-      'g:color',
-      'g:gender',
-    ];
-  }
-
   private async getData(api: string): Promise<Output | undefined> {
     const parser = new Parser({
-      customFields: { item: this.getRssCustomFields() },
+      customFields: {
+        item: [
+          'g:title',
+          'g:description',
+          'g:link',
+          'g:image_link',
+          'g:product_type',
+          'g:price',
+          'g:size',
+          'g:color',
+          'g:gender',
+        ],
+      },
     });
 
     let data;
@@ -110,6 +108,37 @@ class UpdateProductsFromStoreService {
     }
 
     return data;
+  }
+
+  private treatNameValue(name: string): string {
+    return String(name).substr(0, 254);
+  }
+
+  private treatDescriptionValue(description: string): string {
+    return String(description).substr(0, 254);
+  }
+
+  private treatColorValue(color: string): string {
+    return color ?? 'Neutra';
+  }
+
+  private treatPriceValue(price: string): string {
+    return getValueFromRegex(price, '^[^a-zA-Z]*', '0');
+  }
+
+  private treatGenderValue(gender: string): string {
+    switch (gender) {
+      case 'male':
+        return 'Masculino';
+      case 'female':
+        return 'Feminino';
+      default:
+        return 'Unisex';
+    }
+  }
+
+  private treatCategoryValue(category: string): string {
+    return getValueFromRegex(category, '[^>]*$');
   }
 
   private async getCategoryId(

@@ -38,6 +38,16 @@ class LogsRepository implements ILogsRepository {
     return deleteResult.affected !== null;
   }
 
+  public async deleteAll(): Promise<boolean> {
+    const deleteResult = await this.ormRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Log)
+      .execute();
+
+    return deleteResult.affected !== null;
+  }
+
   public async findById(id: string): Promise<Log | undefined> {
     const log = await this.ormRepository.findOne(id);
 

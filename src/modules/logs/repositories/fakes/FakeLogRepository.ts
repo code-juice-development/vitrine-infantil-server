@@ -32,6 +32,12 @@ class FakeLogsRepository implements ILogsRepository {
     return true;
   }
 
+  public async deleteAll(): Promise<boolean> {
+    this.logs = [];
+
+    return true;
+  }
+
   public async findById(id: string): Promise<Log | undefined> {
     const log = this.logs.find((actualLog) => actualLog.id === id);
 
