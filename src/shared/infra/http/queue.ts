@@ -10,4 +10,5 @@ Queue.getInstance().add('UpdateProducts', null, {
   repeat: { cron: '00 01 * * *' },
 });
 
+// eslint-disable-next-line no-console
 console.log('🚀 Queue launched');

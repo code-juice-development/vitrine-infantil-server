@@ -1,5 +1,8 @@
 import { Router } from 'express';
 
+import BullBoard from 'bull-board';
+import Queue from '@shared/infra/bull/Queue';
+
 import usersRouter from '@modules/users/infra/http/routes/users.routes';
 import sessionRouter from '@modules/users/infra/http/routes/session.routes';
 import storesRouter from '@modules/stores/infra/http/routes/stores.routes';
@@ -13,6 +16,11 @@ import logsRouter from '@modules/logs/infra/http/routes/logs.routes';
 
 const routes = Router();
 
+/** @description Public Routes */
+routes.use('/stores-public', storesPublicRouter);
+routes.use('/categories-public', categoriesPublicRouter);
+routes.use('/products-public', productsPublicRouter);
+
 /** @description Private Routes */
 routes.use('/users', usersRouter);
 routes.use('/sessions', sessionRouter);
@@ -22,9 +30,7 @@ routes.use('/products', productsRouter);
 routes.use('/products-update', productsUpdateRouter);
 routes.use('/logs', logsRouter);
 
-/** @description Public Routes */
-routes.use('/stores-public', storesPublicRouter);
-routes.use('/categories-public', categoriesPublicRouter);
-routes.use('/products-public', productsPublicRouter);
+BullBoard.setQueues(Queue.getInstance().getQueues());
+routes.use('/admin', BullBoard.UI);
 
 export default routes;

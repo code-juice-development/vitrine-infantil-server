@@ -217,6 +217,9 @@ class ProductsRepository implements IProductsRepository {
 
     const storeSearch = await queryBuilderStore.getMany();
 
+    // Se não houveram Stores cadastradas
+    if (storeSearch.length === 0) return [];
+
     const sqlUnionStore: string[] = [];
 
     storeSearch.forEach(async ({ id: store_id }) => {

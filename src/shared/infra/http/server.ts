@@ -14,8 +14,6 @@ import '@shared/container';
 import routes from '@shared/infra/http/routes/';
 import errorHandler from '@shared/infra/http/middlewares/errorHandler';
 
-import BullBoard from 'bull-board';
-import Queue from '@shared/infra/bull/Queue';
 // import Socket from '@shared/infra/socketio/Socket';
 
 const app = express();
@@ -31,9 +29,7 @@ app.use(routes);
 app.use(errors());
 app.use(errorHandler);
 
-BullBoard.setQueues(Queue.getInstance().getQueues());
-app.use('/admin', BullBoard.UI);
-
 app.listen(process.env.PORT || 3333, () => {
+  // eslint-disable-next-line no-console
   console.log('🚀 Served launched');
 });
