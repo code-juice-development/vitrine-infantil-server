@@ -127,7 +127,7 @@ class UpdateProductsFromStoreService {
   }
 
   private treatGenderValue(gender: string): string {
-    switch (gender.toLowerCase()) {
+    switch ((gender ?? '').toLowerCase()) {
       case 'male':
         return 'Masculino';
       case 'masculino':
