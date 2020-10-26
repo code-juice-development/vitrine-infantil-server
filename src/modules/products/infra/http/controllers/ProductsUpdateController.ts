@@ -7,7 +7,7 @@ class ProductsUpdateController {
     _request: Request,
     response: Response,
   ): Promise<Response> {
-    Queue.getInstance().add('UpdateProducts', {}, {});
+    await Queue.getInstance().add('UpdateProducts', {}, {});
 
     return response
       .status(201)
