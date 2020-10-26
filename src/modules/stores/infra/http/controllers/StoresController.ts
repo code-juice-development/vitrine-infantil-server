@@ -22,7 +22,7 @@ class StoresController {
       link,
     });
 
-    Queue.getInstance().add('UpdateProductFromStore', { store }, null);
+    await Queue.getInstance().add('UpdateProductFromStore', { store }, null);
 
     return response.status(201).json(store);
   }
@@ -42,7 +42,7 @@ class StoresController {
       link,
     });
 
-    Queue.getInstance().add('UpdateProductFromStore', { store }, null);
+    await Queue.getInstance().add('UpdateProductFromStore', { store }, null);
 
     return response.status(204).send();
   }

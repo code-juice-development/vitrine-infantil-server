@@ -21,6 +21,9 @@ routes.use('/stores-public', storesPublicRouter);
 routes.use('/categories-public', categoriesPublicRouter);
 routes.use('/products-public', productsPublicRouter);
 
+BullBoard.setQueues(Queue.getInstance().getQueues());
+routes.use('/admin', BullBoard.UI);
+
 /** @description Private Routes */
 routes.use('/users', usersRouter);
 routes.use('/sessions', sessionRouter);
@@ -29,8 +32,5 @@ routes.use('/categories', categoriesRouter);
 routes.use('/products', productsRouter);
 routes.use('/products-update', productsUpdateRouter);
 routes.use('/logs', logsRouter);
-
-BullBoard.setQueues(Queue.getInstance().getQueues());
-routes.use('/admin', BullBoard.UI);
 
 export default routes;
