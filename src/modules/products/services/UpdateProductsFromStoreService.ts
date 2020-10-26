@@ -53,7 +53,7 @@ class UpdateProductsFromStoreService {
       const link = element['g:link'];
       const image = element['g:image_link'];
       const price = this.treatPriceValue(element['g:price']);
-      const size = element['g:size'];
+      const size = this.treatSizeValue(element['g:size']);
       const color = this.treatColorValue(element['g:color']);
       const gender = this.treatGenderValue(element['g:gender']);
       const category = this.treatCategoryValue(element['g:product_type']);
@@ -124,6 +124,10 @@ class UpdateProductsFromStoreService {
 
   private treatPriceValue(price: string): string {
     return getValueFromRegex(price, '^[^a-zA-Z]*', '0');
+  }
+
+  private treatSizeValue(color: string): string {
+    return color ?? 'Não informado';
   }
 
   private treatGenderValue(gender: string): string {
