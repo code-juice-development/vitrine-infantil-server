@@ -56,13 +56,13 @@ class CategoriesRepository implements ICategoriesRepository {
   }
 
   public async findById(id: string): Promise<Category | undefined> {
-    const category = this.ormRepository.findOne(id);
+    const category = await this.ormRepository.findOne(id);
 
     return category;
   }
 
   public async findByKeyword(keyword: string): Promise<Category | undefined> {
-    const category = this.ormRepository.findOne({
+    const category = await this.ormRepository.findOne({
       keywords: Like(`%${keyword}%`),
     });
 
@@ -80,6 +80,8 @@ class CategoriesRepository implements ICategoriesRepository {
         name: Like(`%${name}%`),
       });
     }
+
+    queryBuilder.orderBy('name');
 
     const total = await queryBuilder.getCount();
 

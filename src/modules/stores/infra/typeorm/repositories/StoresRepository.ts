@@ -78,6 +78,8 @@ class StoresRepository implements IStoresRepository {
       });
     }
 
+    queryBuilder.orderBy('name');
+
     const total = await queryBuilder.getCount();
 
     if (page) {
