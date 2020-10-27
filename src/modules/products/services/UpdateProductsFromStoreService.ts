@@ -158,7 +158,7 @@ class UpdateProductsFromStoreService {
     });
 
     if (!category) {
-      this.createLogService.execute({
+      await this.createLogService.execute({
         name: 'Erro ao importar o produto',
         type: 'product',
         description: `Não encontrado categoria correspondente`,
