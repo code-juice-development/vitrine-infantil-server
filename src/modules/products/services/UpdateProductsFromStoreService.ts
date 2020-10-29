@@ -47,7 +47,8 @@ class UpdateProductsFromStoreService {
 
     await this.productsRepository.deleteByStore(store_id);
 
-    data.items.forEach(async (element) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const element of data.items) {
       const name = this.treatNameValue(element['g:title']);
       const description = this.treatDescriptionValue(element['g:description']);
       const link = element['g:link'];
@@ -58,10 +59,12 @@ class UpdateProductsFromStoreService {
       const gender = this.treatGenderValue(element['g:gender']);
       const category = this.treatCategoryValue(element['g:product_type']);
 
+      // eslint-disable-next-line no-await-in-loop
       const category_id = await this.getCategoryId(category, name);
 
       if (!category_id) return;
 
+      // eslint-disable-next-line no-await-in-loop
       await this.productsRepository.create({
         name,
         description,
@@ -74,7 +77,7 @@ class UpdateProductsFromStoreService {
         category_id,
         store_id,
       });
-    });
+    }
   }
 
   private async getData(api: string): Promise<Output | undefined> {
@@ -99,7 +102,7 @@ class UpdateProductsFromStoreService {
     try {
       data = await parser.parseURL(api);
     } catch (error) {
-      this.createLogService.execute({
+      await this.createLogService.execute({
         name: 'Erro ao importar os Produtos',
         type: 'product',
         description: 'Houve um erro ao conectar a API',
