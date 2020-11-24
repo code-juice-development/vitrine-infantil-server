@@ -24,7 +24,6 @@ describe('Update Users Service', () => {
       name: 'John Ruan',
       email: 'johnruan@example.com',
       image_url: '',
-      password: 'adm@321',
     });
 
     expect(updateUser.id).toBe(user.id);

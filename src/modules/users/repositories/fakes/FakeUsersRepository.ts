@@ -30,11 +30,10 @@ class FakeUsersRepository implements IUsersRepository {
     name,
     email,
     image_url,
-    password,
   }: IUpdateUserDTO): Promise<User> {
     const user = this.users.find((userFind) => userFind.id === id);
 
-    Object.assign(user, { id, name, email, image_url, password });
+    Object.assign(user, { id, name, email, image_url });
 
     return user ?? new User();
   }
