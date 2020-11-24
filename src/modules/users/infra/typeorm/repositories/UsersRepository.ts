@@ -37,14 +37,12 @@ class UsersRepository implements IUsersRepository {
     name,
     email,
     image_url,
-    password,
   }: IUpdateUserDTO): Promise<User> {
     const user = this.ormRepository.create({
       id,
       name,
       email,
       image_url,
-      password,
     });
 
     await this.ormRepository.save(user);

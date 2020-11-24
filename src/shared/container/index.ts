@@ -17,6 +17,9 @@ import CategoriesRepository from '@modules/categories/infra/typeorm/repositories
 import ILogsRepository from '@modules/logs/repositories/ILogsRepository';
 import LogsRepository from '@modules/logs/infra/typeorm/repositories/LogsRepository';
 
+import IPromotionsRepository from '@modules/promotions/repositories/IPromotionsRepository';
+import PromotionsRepository from '@modules/promotions/infra/typeorm/repositories/PromotionsRepository';
+
 container.registerSingleton<IStoresRepository>(
   'StoresRepository',
   StoresRepository,
@@ -34,3 +37,7 @@ container.registerSingleton<ICategoriesRepository>(
   CategoriesRepository,
 );
 container.registerSingleton<ILogsRepository>('LogsRepository', LogsRepository);
+container.registerSingleton<IPromotionsRepository>(
+  'PromotionsRepository',
+  PromotionsRepository,
+);
