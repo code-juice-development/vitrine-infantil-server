@@ -3,7 +3,7 @@
  <img height=150px src="logo.png" alt="Project logo"></a>
 </p>
 
-<h3 align="center">Vitrine Infantil Server</h3>
+[![Status](https://img.shields.io/badge/status-deactivated-red.svg)]()
 
 <div align="center">
 
