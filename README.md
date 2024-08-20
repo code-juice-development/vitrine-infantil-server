@@ -3,11 +3,9 @@
  <img height=150px src="logo.png" alt="Project logo"></a>
 </p>
 
-[![Status](https://img.shields.io/badge/status-deactivated-red.svg)]()
-
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![Status](https://img.shields.io/badge/status-deactivated-red.svg)]()
 
 </div>
 
